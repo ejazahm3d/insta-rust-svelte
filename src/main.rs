@@ -1,9 +1,11 @@
 use std::net::TcpListener;
 
-use insta::startup::run;
+use insta::{configuration::get_configuration, startup::run};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let address = TcpListener::bind("127.0.0.1:8080").expect("Failed to bind port");
-    run(address)?.await
+    let configuration = get_configuration().expect("Failed to read configuration.");
+    let address = format!("127.0.0.1:{}", configuration.application_port);
+    let listener = TcpListener::bind(address).expect("Failed to bind port");
+    run(listener)?.await
 }
