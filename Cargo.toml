@@ -20,6 +20,9 @@ actix-service = "=2.0.0-beta.5"
 sqlx = { version = "0.5.5", default-features = false, features = [ "runtime-actix-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "offline"] }
 serde = { version = "1", features = ["derive"]}
 config = "0.11.0"
+chrono = {version = "0.4.15", features = ["serde"]}
+uuid = { version = "0.8.1", features = ["v4", "serde"] }
+
 
 [dev-dependencies]
 actix-rt = "2"
