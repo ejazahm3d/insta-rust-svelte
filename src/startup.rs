@@ -1,3 +1,4 @@
+use actix_session::CookieSession;
 use actix_web::{
     dev::Server,
     web::{self, post},
@@ -13,6 +14,8 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         App::new()
+            .wrap(actix_web::middleware::Logger::default())
+            .wrap(CookieSession::signed(&[0; 32]).secure(false))
             .route("/health_check", get().to(health_check))
             .route("/api/users", get().to(get_all_users))
             .route("/api/auth/signup", post().to(sign_up))

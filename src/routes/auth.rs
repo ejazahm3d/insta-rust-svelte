@@ -1,9 +1,14 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, usize};
 
+use actix_session::Session;
 use actix_web::{web, HttpResponse};
+use chrono::{Duration, Utc};
 use sqlx::PgPool;
 
-use crate::{models::User, services::Password};
+use crate::{
+    models::User,
+    services::{Claims, Password, Token},
+};
 
 #[derive(serde::Deserialize)]
 pub struct LoginDto {
@@ -22,6 +27,7 @@ pub struct SignUpDto {
 pub async fn sign_up(
     body: web::Json<SignUpDto>,
     conn: web::Data<PgPool>,
+    session: Session,
 ) -> Result<HttpResponse, HttpResponse> {
     let hashed_password = Password::hash_password(body.password.as_str()).map_err(|e| {
         eprintln!("Failed to hash password {}", e);
@@ -67,12 +73,26 @@ pub async fn sign_up(
     map.insert("id", res.id.to_string());
     map.insert("username", res.username);
 
+    let _date = Utc::now() + Duration::days(7);
+
+    let token = Token::sign(Claims {
+        sub: body.email.clone(),
+        exp: _date.timestamp() as usize,
+    })
+    .map_err(|e| {
+        eprintln!("Failed to sign user {}", e);
+        HttpResponse::InternalServerError().finish()
+    })?;
+
+    session.insert("jwt", token)?;
+
     Ok(HttpResponse::Created().json(map))
 }
 
 pub async fn login(
     body: web::Json<LoginDto>,
     conn: web::Data<PgPool>,
+    session: Session,
 ) -> Result<HttpResponse, HttpResponse> {
     let user = sqlx::query_as!(
         User,
@@ -101,6 +121,19 @@ pub async fn login(
     if !is_match {
         return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
     }
+
+    let _date = Utc::now() + Duration::days(7);
+
+    let token = Token::sign(Claims {
+        sub: user.email,
+        exp: _date.timestamp() as usize,
+    })
+    .map_err(|e| {
+        eprintln!("Failed to sign user {}", e);
+        HttpResponse::InternalServerError().finish()
+    })?;
+
+    session.insert("jwt", token)?;
 
     Ok(HttpResponse::Ok().body(format!("{} {}", body.email, body.password)))
 }
