@@ -1,1 +1,25 @@
+### Get Users
 GET http://localhost:5000/api/users 
+
+### Sign Up
+POST http://localhost:5000/api/auth/signup HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "test1@test.com",
+    "password": "12345678",
+    "username": "test1"
+}
+
+### Login
+POST http://localhost:5000/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "12345678"
+}
+
+
+### Logout
+POST http://localhost:5000/api/auth/logout HTTP/1.1

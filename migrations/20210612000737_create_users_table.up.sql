@@ -7,6 +7,6 @@ CREATE TABLE users (
     username VARCHAR(30) NOT NULL UNIQUE,
     bio TEXT,
     avatar TEXT,
-    password TEXT,
+    password TEXT NOT NULL,
     status TEXT
 );
