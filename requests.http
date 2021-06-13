@@ -1,5 +1,5 @@
-### Get Users
-GET http://localhost:5000/api/users 
+### Get Posts
+GET http://localhost:5000/api/posts 
 
 ### Sign Up
 POST http://localhost:5000/api/auth/signup HTTP/1.1

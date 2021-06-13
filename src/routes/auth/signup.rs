@@ -10,22 +10,10 @@ use crate::{
     services::{Claims, Password, Token},
 };
 
-#[derive(serde::Deserialize)]
-pub struct LoginDto {
-    email: String,
-    password: String,
-}
-
-#[derive(serde::Deserialize)]
-pub struct SignUpDto {
-    email: String,
-    username: String,
-    password: String,
-    avatar: Option<String>,
-}
+use super::dtos::SignUpRequest;
 
 pub async fn sign_up(
-    body: web::Json<SignUpDto>,
+    body: web::Json<SignUpRequest>,
     conn: web::Data<PgPool>,
     session: Session,
 ) -> Result<HttpResponse, HttpResponse> {
@@ -68,11 +56,6 @@ pub async fn sign_up(
         HttpResponse::InternalServerError().finish()
     })?;
 
-    let mut map: HashMap<&str, String> = HashMap::new();
-
-    map.insert("id", res.id.to_string());
-    map.insert("username", res.username);
-
     let _date = Utc::now() + Duration::days(7);
 
     let token = Token::sign(Claims {
@@ -84,60 +67,13 @@ pub async fn sign_up(
         HttpResponse::InternalServerError().finish()
     })?;
 
+    // Save jwt in cookie session
     session.insert("jwt", token)?;
+
+    let mut map: HashMap<&str, String> = HashMap::new();
+
+    map.insert("id", res.id.to_string());
+    map.insert("username", res.username);
 
     Ok(HttpResponse::Created().json(map))
-}
-
-pub async fn login(
-    body: web::Json<LoginDto>,
-    conn: web::Data<PgPool>,
-    session: Session,
-) -> Result<HttpResponse, HttpResponse> {
-    let user = sqlx::query_as!(
-        User,
-        "SELECT id, email, username, created_at, updated_at, avatar, password FROM users WHERE email = $1;",
-        body.email
-    )
-    .fetch_optional(conn.get_ref())
-    .await
-    .map_err(|e| {
-        eprintln!("Failed to fetch user {}", e);
-        HttpResponse::InternalServerError().finish()
-    })?;
-
-    if user.is_none() {
-        return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
-    }
-
-    let user = user.unwrap();
-
-    let is_match = Password::verify_password(body.password.as_str(), user.password.as_str())
-        .map_err(|e| {
-            eprintln!("Failed to verify user {}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
-
-    if !is_match {
-        return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
-    }
-
-    let _date = Utc::now() + Duration::days(7);
-
-    let token = Token::sign(Claims {
-        sub: user.email,
-        exp: _date.timestamp() as usize,
-    })
-    .map_err(|e| {
-        eprintln!("Failed to sign user {}", e);
-        HttpResponse::InternalServerError().finish()
-    })?;
-
-    session.insert("jwt", token)?;
-
-    Ok(HttpResponse::Ok().body(format!("{} {}", body.email, body.password)))
-}
-
-pub async fn logout() -> HttpResponse {
-    HttpResponse::Ok().finish()
 }
