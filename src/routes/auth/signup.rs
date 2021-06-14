@@ -23,7 +23,7 @@ pub async fn sign_up(
     };
 
     let user_with_email = user_repository
-        .find_user_with_email(body.email.clone())
+        .find_user_with_email(&body.email)
         .await
         .map_err(|e| {
             eprintln!("Failed to fetch user {:?}", e);
@@ -46,24 +46,26 @@ pub async fn sign_up(
         return Ok(HttpResponse::BadRequest().body("User with username already exists"));
     }
 
-    let hashed_password = Password::hash_password(body.password.as_str()).map_err(|e| {
+    let hashed_password = Password::hash_password(&body.password).map_err(|e| {
         eprintln!("Failed to hash password {}", e);
         HttpResponse::InternalServerError().finish()
     })?;
 
-    let res = sqlx::query!(
-        "INSERT into users(email, username, password, avatar) VALUES($1, $2, $3, $4) RETURNING id, username, email;",
-        body.email,
-        body.username,
-        hashed_password,
-        body.avatar
-    )
-    .fetch_one(conn.as_ref())
-    .await
-    .map_err(|e| {
-        eprintln!("Failed to add user {}", e);
-        HttpResponse::InternalServerError().finish()
-    })?;
+    let res = user_repository
+        .insert_one(
+            SignUpRequest {
+                avatar: body.avatar.clone(),
+                email: body.email.clone(),
+                password: body.password.clone(),
+                username: body.username.clone(),
+            },
+            &hashed_password,
+        )
+        .await
+        .map_err(|e| {
+            eprintln!("Failed to add user {}", e);
+            HttpResponse::InternalServerError().finish()
+        })?;
 
     let _date = Utc::now() + Duration::days(7);
 

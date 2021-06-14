@@ -17,7 +17,7 @@ pub async fn login(
     let user_repository = UserRepository { connection: &conn };
 
     let user = user_repository
-        .find_user_with_email(body.email.clone())
+        .find_user_with_email(&body.email)
         .await
         .map_err(|e| {
             eprintln!("Failed to fetch user {}", e);
