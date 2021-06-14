@@ -1,5 +1,5 @@
 use crate::{
-    models::User,
+    repos::UserRepository,
     services::{Claims, Password, Token},
 };
 use actix_session::Session;
@@ -7,24 +7,22 @@ use actix_web::{web, HttpResponse};
 use chrono::{Duration, Utc};
 use sqlx::PgPool;
 
-use super::dtos::LoginRequest;
+use super::dtos::{LoginRequest, LoginResponse};
 
 pub async fn login(
     body: web::Json<LoginRequest>,
     conn: web::Data<PgPool>,
     session: Session,
 ) -> Result<HttpResponse, HttpResponse> {
-    let user = sqlx::query_as!(
-        User,
-        "SELECT id, email, username, created_at, updated_at, avatar, password FROM users WHERE email = $1;",
-        body.email
-    )
-    .fetch_optional(conn.get_ref())
-    .await
-    .map_err(|e| {
-        eprintln!("Failed to fetch user {}", e);
-        HttpResponse::InternalServerError().finish()
-    })?;
+    let user_repository = UserRepository { connection: &conn };
+
+    let user = user_repository
+        .find_user_with_email(body.email.clone())
+        .await
+        .map_err(|e| {
+            eprintln!("Failed to fetch user {}", e);
+            HttpResponse::InternalServerError().finish()
+        })?;
 
     if user.is_none() {
         return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
@@ -32,13 +30,13 @@ pub async fn login(
 
     let user = user.unwrap();
 
-    let is_match = Password::verify_password(body.password.as_str(), user.password.as_str())
-        .map_err(|e| {
+    let is_password_match =
+        Password::verify_password(body.password.as_str(), user.password.as_str()).map_err(|e| {
             eprintln!("Failed to verify user {}", e);
             HttpResponse::InternalServerError().finish()
         })?;
 
-    if !is_match {
+    if !is_password_match {
         return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
     }
 
@@ -56,5 +54,9 @@ pub async fn login(
     // Save jwt in cookie session
     session.insert("jwt", token)?;
 
-    Ok(HttpResponse::Ok().finish())
+    Ok(HttpResponse::Ok().json(LoginResponse {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+    }))
 }

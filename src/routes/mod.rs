@@ -6,7 +6,7 @@ use actix_web::web::{self, get, post};
 pub use health_check::*;
 
 use self::{
-    auth::{login, logout, sign_up},
+    auth::{current_user, login, logout, sign_up},
     posts::list,
 };
 
@@ -19,7 +19,8 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                 web::scope("/auth")
                     .route("/signup", post().to(sign_up))
                     .route("/login", post().to(login))
-                    .route("/logout", post().to(logout)),
+                    .route("/logout", post().to(logout))
+                    .route("/current", get().to(current_user)),
             )
             .service(web::scope("/posts").route("", get().to(list))),
     );

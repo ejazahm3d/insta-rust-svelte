@@ -6,9 +6,9 @@ POST http://localhost:5000/api/auth/signup HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "test2@test.com",
+    "email": "test3@test.com",
     "password": "12345678",
-    "username": "test2"
+    "username": "test3"
 }
 
 ### Login
@@ -20,6 +20,8 @@ Content-Type: application/json
     "password": "12345678"
 }
 
+### Current User
+GET http://localhost:5000/api/auth/current HTTP/1.1
 
 ### Logout
 POST http://localhost:5000/api/auth/logout HTTP/1.1
