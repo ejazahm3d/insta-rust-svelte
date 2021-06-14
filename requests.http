@@ -25,3 +25,13 @@ POST http://localhost:5000/api/auth/logout HTTP/1.1
 
 ### Get Posts
 GET http://localhost:5000/api/posts 
+
+
+### Create Post
+POST http://localhost:5000/api/posts HTTP/1.1
+Content-Type: application/json
+
+{
+    "url": "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    "caption": "Beautiful"
+}

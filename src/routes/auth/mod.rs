@@ -1,5 +1,4 @@
 pub mod current;
-pub mod dtos;
 pub mod login;
 pub mod logout;
 pub mod signup;

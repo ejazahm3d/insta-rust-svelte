@@ -4,14 +4,26 @@ use actix_session::Session;
 use actix_web::{web, HttpResponse};
 use chrono::{Duration, Utc};
 use sqlx::PgPool;
+use uuid::Uuid;
 
-use crate::{
-    routes::auth::dtos::SignUpResponse,
-    services::{Claims, Password, Token},
-};
+use crate::services::{Claims, Password, Token};
 
-use super::dtos::SignUpRequest;
 use crate::repos::UserRepository;
+
+#[derive(serde::Deserialize)]
+pub struct SignUpRequest {
+    pub(crate) email: String,
+    pub(crate) username: String,
+    pub(crate) password: String,
+    pub(crate) avatar: Option<String>,
+}
+
+#[derive(serde::Serialize)]
+pub struct SignUpResponse {
+    pub(crate) id: Uuid,
+    pub(crate) email: String,
+    pub(crate) username: String,
+}
 
 pub async fn sign_up(
     body: web::Json<SignUpRequest>,
@@ -70,7 +82,7 @@ pub async fn sign_up(
     let _date = Utc::now() + Duration::days(7);
 
     let token = Token::sign(Claims {
-        sub: body.email.clone(),
+        sub: res.id,
         exp: _date.timestamp() as usize,
     })
     .map_err(|e| {

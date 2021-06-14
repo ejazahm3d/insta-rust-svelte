@@ -1,11 +1,12 @@
 use jsonwebtoken::{
     decode, encode, errors::Error, DecodingKey, EncodingKey, Header, TokenData, Validation,
 };
+use uuid::Uuid;
 pub struct Token;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Claims {
-    pub sub: String,
+    pub sub: Uuid,
     pub exp: usize,
 }
 

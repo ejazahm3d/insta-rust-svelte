@@ -6,8 +6,20 @@ use actix_session::Session;
 use actix_web::{web, HttpResponse};
 use chrono::{Duration, Utc};
 use sqlx::PgPool;
+use uuid::Uuid;
 
-use super::dtos::{LoginRequest, LoginResponse};
+#[derive(serde::Deserialize)]
+pub struct LoginRequest {
+    pub(crate) email: String,
+    pub(crate) password: String,
+}
+
+#[derive(serde::Serialize)]
+pub struct LoginResponse {
+    pub(crate) id: Uuid,
+    pub(crate) email: String,
+    pub(crate) username: String,
+}
 
 pub async fn login(
     body: web::Json<LoginRequest>,
@@ -43,7 +55,7 @@ pub async fn login(
     let _date = Utc::now() + Duration::days(7);
 
     let token = Token::sign(Claims {
-        sub: user.id.to_string(),
+        sub: user.id,
         exp: _date.timestamp() as usize,
     })
     .map_err(|e| {

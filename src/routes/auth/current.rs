@@ -1,9 +1,18 @@
 use actix_session::Session;
 use actix_web::HttpResponse;
+use uuid::Uuid;
 
 use crate::services::Token;
 
-use super::dtos::{CurrentUser, CurrentUserResponse};
+#[derive(serde::Serialize)]
+pub struct CurrentUser {
+    pub(crate) id: Uuid,
+}
+
+#[derive(serde::Serialize)]
+pub struct CurrentUserResponse {
+    pub(crate) user: Option<CurrentUser>,
+}
 
 pub async fn current_user(session: Session) -> HttpResponse {
     if let Ok(token_string) = session.get::<String>("jwt") {

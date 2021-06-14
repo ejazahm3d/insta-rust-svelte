@@ -3,11 +3,12 @@ use actix_session::UserSession;
 use actix_web::error::ErrorUnauthorized;
 use actix_web::{dev, Error, FromRequest, HttpRequest};
 use futures::future::{err, ok, Ready};
+use uuid::Uuid;
 
 use crate::services::Token;
 
 pub struct AuthorizationService {
-    pub id: String,
+    pub id: Uuid,
 }
 
 impl FromRequest for AuthorizationService {

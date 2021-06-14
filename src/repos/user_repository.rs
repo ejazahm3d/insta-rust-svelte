@@ -1,6 +1,6 @@
 use crate::{
     models::User,
-    routes::auth::dtos::{SignUpRequest, SignUpResponse},
+    routes::auth::{SignUpRequest, SignUpResponse},
 };
 use sqlx::{Error, PgPool};
 
