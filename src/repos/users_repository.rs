@@ -4,11 +4,11 @@ use crate::{
 };
 use sqlx::{Error, PgPool};
 
-pub struct UserRepository<'a> {
+pub struct UsersRepository<'a> {
     pub connection: &'a PgPool,
 }
 
-impl UserRepository<'_> {
+impl UsersRepository<'_> {
     pub async fn find_user_with_email(&self, email: &str) -> Result<Option<User>, Error> {
         let user = sqlx::query_as!(
             User,

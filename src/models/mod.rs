@@ -23,3 +23,13 @@ pub struct Post {
     pub lng: Option<f32>,
     pub user_id: Uuid,
 }
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct Comment {
+    pub id: Uuid,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
+    pub contents: String,
+    pub user_id: Uuid,
+    pub post_id: Uuid,
+}

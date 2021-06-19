@@ -3,7 +3,7 @@ use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-pub async fn details(
+pub async fn post_details(
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {

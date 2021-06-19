@@ -9,7 +9,7 @@ use uuid::Uuid;
 use crate::io::error::Error;
 use crate::services::{Claims, Password, Token};
 
-use crate::repos::UserRepository;
+use crate::repos::UsersRepository;
 
 #[derive(serde::Deserialize)]
 pub struct SignUpRequest {
@@ -31,7 +31,7 @@ pub async fn sign_up(
     conn: web::Data<PgPool>,
     session: Session,
 ) -> Result<HttpResponse, Error> {
-    let user_repository = UserRepository {
+    let user_repository = UsersRepository {
         connection: conn.as_ref(),
     };
 

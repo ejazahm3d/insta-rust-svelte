@@ -1,6 +1,6 @@
 use crate::{
     io::error::Error,
-    repos::UserRepository,
+    repos::UsersRepository,
     services::{Claims, Password, Token},
 };
 use actix_session::Session;
@@ -27,7 +27,7 @@ pub async fn login(
     conn: web::Data<PgPool>,
     session: Session,
 ) -> Result<HttpResponse, Error> {
-    let user_repository = UserRepository { connection: &conn };
+    let user_repository = UsersRepository { connection: &conn };
 
     let user = user_repository.find_user_with_email(&body.email).await?;
 
