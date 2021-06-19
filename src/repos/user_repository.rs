@@ -22,7 +22,7 @@ impl UserRepository<'_> {
 
         return user;
     }
-    pub async fn find_user_with_username(&self, username: String) -> Result<Option<User>, Error> {
+    pub async fn find_user_with_username(&self, username: &str) -> Result<Option<User>, Error> {
         let user = sqlx::query_as!(
             User,
             r#"

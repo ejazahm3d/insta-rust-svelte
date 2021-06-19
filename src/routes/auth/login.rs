@@ -1,4 +1,5 @@
 use crate::{
+    io::error::Error,
     repos::UserRepository,
     services::{Claims, Password, Token},
 };
@@ -25,16 +26,10 @@ pub async fn login(
     body: web::Json<LoginRequest>,
     conn: web::Data<PgPool>,
     session: Session,
-) -> Result<HttpResponse, HttpResponse> {
+) -> Result<HttpResponse, Error> {
     let user_repository = UserRepository { connection: &conn };
 
-    let user = user_repository
-        .find_user_with_email(&body.email)
-        .await
-        .map_err(|e| {
-            eprintln!("Failed to fetch user {}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
+    let user = user_repository.find_user_with_email(&body.email).await?;
 
     if user.is_none() {
         return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
@@ -43,10 +38,7 @@ pub async fn login(
     let user = user.unwrap();
 
     let is_password_match =
-        Password::verify_password(body.password.as_str(), user.password.as_str()).map_err(|e| {
-            eprintln!("Failed to verify user {}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
+        Password::verify_password(body.password.as_str(), user.password.as_str())?;
 
     if !is_password_match {
         return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
@@ -57,10 +49,6 @@ pub async fn login(
     let token = Token::sign(Claims {
         sub: user.id,
         exp: _date.timestamp() as usize,
-    })
-    .map_err(|e| {
-        eprintln!("Failed to sign user {}", e);
-        HttpResponse::InternalServerError().finish()
     })?;
 
     // Save jwt in cookie session

@@ -6,6 +6,7 @@ use chrono::{Duration, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
 
+use crate::io::error::Error;
 use crate::services::{Claims, Password, Token};
 
 use crate::repos::UserRepository;
@@ -29,39 +30,26 @@ pub async fn sign_up(
     body: web::Json<SignUpRequest>,
     conn: web::Data<PgPool>,
     session: Session,
-) -> Result<HttpResponse, HttpResponse> {
+) -> Result<HttpResponse, Error> {
     let user_repository = UserRepository {
         connection: conn.as_ref(),
     };
 
-    let user_with_email = user_repository
-        .find_user_with_email(&body.email)
-        .await
-        .map_err(|e| {
-            eprintln!("Failed to fetch user {:?}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
+    let user_with_email = user_repository.find_user_with_email(&body.email).await?;
 
     if user_with_email.is_some() {
         return Ok(HttpResponse::BadRequest().body("User with email already exists"));
     }
 
     let user_with_username = user_repository
-        .find_user_with_username(body.username.clone())
-        .await
-        .map_err(|e| {
-            eprintln!("Failed to fetch user {:?}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
+        .find_user_with_username(&body.username)
+        .await?;
 
     if user_with_username.is_some() {
         return Ok(HttpResponse::BadRequest().body("User with username already exists"));
     }
 
-    let hashed_password = Password::hash_password(&body.password).map_err(|e| {
-        eprintln!("Failed to hash password {}", e);
-        HttpResponse::InternalServerError().finish()
-    })?;
+    let hashed_password = Password::hash_password(&body.password)?;
 
     let res = user_repository
         .insert_one(
@@ -73,21 +61,13 @@ pub async fn sign_up(
             },
             &hashed_password,
         )
-        .await
-        .map_err(|e| {
-            eprintln!("Failed to add user {}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
+        .await?;
 
-    let _date = Utc::now() + Duration::days(7);
+    let expiry_date = Utc::now() + Duration::days(7);
 
     let token = Token::sign(Claims {
         sub: res.id,
-        exp: _date.timestamp() as usize,
-    })
-    .map_err(|e| {
-        eprintln!("Failed to sign user {}", e);
-        HttpResponse::InternalServerError().finish()
+        exp: expiry_date.timestamp() as usize,
     })?;
 
     // Save jwt in cookie session

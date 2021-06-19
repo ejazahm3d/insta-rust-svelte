@@ -1,4 +1,4 @@
-use crate::{extractors::AuthorizationService, repos::PostsRepository};
+use crate::{extractors::AuthorizationService, io::error::Error, repos::PostsRepository};
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 
@@ -14,20 +14,12 @@ pub async fn create_post(
     body: web::Json<CreatePostRequest>,
     _auth_service: AuthorizationService,
     _conn: web::Data<PgPool>,
-) -> Result<HttpResponse, HttpResponse> {
+) -> anyhow::Result<HttpResponse, Error> {
     let post_repository = PostsRepository {
         connection: _conn.get_ref(),
     };
 
-    println!("{:?}", body);
-
-    let post = post_repository
-        .insert_one(body.0, _auth_service.id)
-        .await
-        .map_err(|e| {
-            eprintln!("Failed to insert post {:?}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
+    let post = post_repository.insert_one(body.0, _auth_service.id).await?;
 
     Ok(HttpResponse::Ok().json(post))
 }
