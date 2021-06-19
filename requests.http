@@ -24,7 +24,10 @@ GET http://localhost:5000/api/auth/current HTTP/1.1
 POST http://localhost:5000/api/auth/logout HTTP/1.1
 
 ### Get Posts
-GET http://localhost:5000/api/posts 
+GET http://localhost:5000/api/posts
+
+### Get Post by Id
+GET http://localhost:5000/api/posts/03cc6436-d454-4f75-abf9-749449dfedf6
 
 
 ### Create Post

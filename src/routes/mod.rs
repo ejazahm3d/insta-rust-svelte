@@ -7,7 +7,7 @@ pub use health_check::*;
 
 use self::{
     auth::{current_user, login, logout, sign_up},
-    posts::{create_post, list},
+    posts::{create_post, details, list},
 };
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
@@ -25,7 +25,8 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
             .service(
                 web::scope("/posts")
                     .route("", get().to(list))
-                    .route("", post().to(create_post)),
+                    .route("", post().to(create_post))
+                    .route("/{post_id}", get().to(details)),
             ),
     );
 }
