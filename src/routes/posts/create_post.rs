@@ -12,14 +12,14 @@ pub struct CreatePostRequest {
 
 pub async fn create_post(
     body: web::Json<CreatePostRequest>,
-    _auth_service: AuthorizationService,
-    _conn: web::Data<PgPool>,
+    auth_service: AuthorizationService,
+    conn: web::Data<PgPool>,
 ) -> anyhow::Result<HttpResponse, Error> {
     let post_repository = PostsRepository {
-        connection: _conn.get_ref(),
+        connection: conn.get_ref(),
     };
 
-    let post = post_repository.insert_one(body.0, _auth_service.id).await?;
+    let post = post_repository.insert_one(body.0, auth_service.id).await?;
 
     Ok(HttpResponse::Ok().json(post))
 }

@@ -10,16 +10,16 @@ pub struct CreateCommentRequest {
 
 pub async fn create_comment(
     body: web::Json<CreateCommentRequest>,
-    _auth_service: AuthorizationService,
-    _conn: web::Data<PgPool>,
+    auth_service: AuthorizationService,
+    conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
 ) -> anyhow::Result<HttpResponse, Error> {
     let comments_repository = CommentsRepository {
-        connection: _conn.get_ref(),
+        connection: conn.get_ref(),
     };
 
     let comment = comments_repository
-        .insert_one(&body.0, &_auth_service.id, &path)
+        .insert_one(&body.0, &auth_service.id, &path)
         .await?;
 
     Ok(HttpResponse::Ok().json(comment))
