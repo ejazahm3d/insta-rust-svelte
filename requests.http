@@ -1,5 +1,5 @@
 ### Sign Up
-POST http://localhost:5000/api/auth/signup HTTP/1.1
+POST http://localhost:5000/api/auth/signup 
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### Login
-POST http://localhost:5000/api/auth/login HTTP/1.1
+POST http://localhost:5000/api/auth/login 
 Content-Type: application/json
 
 {
@@ -18,29 +18,32 @@ Content-Type: application/json
 }
 
 ### Current User
-GET http://localhost:5000/api/auth/current HTTP/1.1
+GET http://localhost:5000/api/auth/current 
 
 ### Logout
-POST http://localhost:5000/api/auth/logout HTTP/1.1
+POST http://localhost:5000/api/auth/logout 
 
 ### Get Posts
 GET http://localhost:5000/api/posts
 
+### Delete Post by Id
+DELETE http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c
+
 ### Get Post by Id
-GET http://localhost:5000/api/posts/03cc6436-d454-4f75-abf9-749449dfedf6
+GET http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c
 
 ### Get Comments by Post Id
-GET http://localhost:5000/api/posts/03cc6436-d454-4f75-abf9-749449dfedf6/comments
+GET http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c/comments
 
 ### DELETE Comment on Post
-DELETE http://localhost:5000/api/posts/03cc6436-d454-4f75-abf9-749449dfedf6/comments/fb5736c1-9e95-4c83-8289-e35b80db8360
+DELETE http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c/comments/fb5736c1-9e95-4c83-8289-e35b80db8360
 
 
 ### Create Post
-POST http://localhost:5000/api/posts HTTP/1.1
+POST http://localhost:5000/api/posts 
 Content-Type: application/json
 
 {
     "url": "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    "caption": "Beautiful"
+    "caption": "Beautiful two"
 }

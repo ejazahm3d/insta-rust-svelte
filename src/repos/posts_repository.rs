@@ -40,4 +40,18 @@ impl PostsRepository<'_> {
 
         return post;
     }
+
+    pub async fn delete_one(&self, post_id: &Uuid) -> Result<Post, Error> {
+        let post = sqlx::query_as!(
+            Post,
+            r#"
+        DELETE FROM posts WHERE id = $1 RETURNING *;
+        "#,
+            post_id
+        )
+        .fetch_one(self.connection)
+        .await;
+
+        return post;
+    }
 }
