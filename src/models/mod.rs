@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 #[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct User {
     pub id: Uuid,
     pub email: String,
@@ -13,6 +14,7 @@ pub struct User {
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Post {
     pub id: Uuid,
     pub created_at: Option<DateTime<Utc>>,
@@ -25,6 +27,7 @@ pub struct Post {
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Comment {
     pub id: Uuid,
     pub created_at: Option<DateTime<Utc>>,

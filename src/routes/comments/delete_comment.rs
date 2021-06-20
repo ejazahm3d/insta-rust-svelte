@@ -13,8 +13,24 @@ pub async fn delete_comment(
     };
 
     let comment_id = path.1;
+    let user_id = _auth_service.id;
 
-    let comment = comments_repository.delete_one(&comment_id).await?;
+    let comment = comments_repository.find_one(&comment_id).await?;
 
-    Ok(HttpResponse::Ok().json(comment))
+    if comment.is_none() {
+        return Ok(HttpResponse::NotFound().body("Comment Not found"));
+    }
+
+    let comment = comment.unwrap();
+
+    let is_owner = comment.user_id == user_id;
+
+    match is_owner {
+        true => {
+            let comment = comments_repository.delete_one(&comment_id).await?;
+
+            Ok(HttpResponse::Ok().json(comment))
+        }
+        false => Ok(HttpResponse::Unauthorized().body("Not owner")),
+    }
 }

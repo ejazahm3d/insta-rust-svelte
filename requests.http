@@ -26,24 +26,33 @@ POST http://localhost:5000/api/auth/logout
 ### Get Posts
 GET http://localhost:5000/api/posts
 
-### Delete Post by Id
-DELETE http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c
-
-### Get Post by Id
-GET http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c
-
-### Get Comments by Post Id
-GET http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c/comments
-
-### DELETE Comment on Post
-DELETE http://localhost:5000/api/posts/7cd0c68f-fd76-485f-96fd-0406caf27e5c/comments/fb5736c1-9e95-4c83-8289-e35b80db8360
-
-
 ### Create Post
 POST http://localhost:5000/api/posts 
 Content-Type: application/json
 
 {
     "url": "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    "caption": "Beautiful two"
+    "caption": "Beautiful three"
 }
+
+### Delete Post by Id
+DELETE http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a
+
+### Get Post by Id
+GET http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a
+
+### Get Comments by Post Id
+GET http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/comments
+
+### Create Comment
+POST http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/comments
+Content-Type: application/json
+
+{
+    "contents": "What is that bruh"
+}
+
+### DELETE Comment on Post
+DELETE http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/comments/e569e878-66a7-47ab-b650-fb8297573134
+
+

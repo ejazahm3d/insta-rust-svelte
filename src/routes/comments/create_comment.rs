@@ -18,8 +18,11 @@ pub async fn create_comment(
         connection: conn.get_ref(),
     };
 
+    let user_id = auth_service.id;
+    let post_id = path;
+
     let comment = comments_repository
-        .insert_one(&body.0, &auth_service.id, &path)
+        .insert_one(&body.0, &user_id, &post_id)
         .await?;
 
     Ok(HttpResponse::Ok().json(comment))
