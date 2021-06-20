@@ -61,4 +61,19 @@ impl CommentsRepository<'_> {
 
         return comment;
     }
+
+    pub async fn update_one(&self, comment_id: &Uuid, contents: &str) -> Result<Comment, Error> {
+        let comment = sqlx::query_as!(
+            Comment,
+            r#"
+        UPDATE comments SET contents = $1 WHERE id = $2 RETURNING *;
+        "#,
+            contents,
+            comment_id
+        )
+        .fetch_one(self.connection)
+        .await;
+
+        return comment;
+    }
 }

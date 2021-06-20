@@ -3,12 +3,12 @@ pub mod comments;
 pub mod health_check;
 pub mod posts;
 
-use actix_web::web::{self, delete, get, post};
+use actix_web::web::{self, delete, get, patch, post};
 pub use health_check::*;
 
 use self::{
     auth::{current_user, login, logout, sign_up},
-    comments::{create_comment, delete_comment, post_comments},
+    comments::{create_comment, delete_comment, post_comments, update_comment},
     posts::{create_post, delete_post, list_all_posts, post_details},
 };
 
@@ -35,6 +35,10 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                     .route(
                         "/{post_id}/comments/{comment_id}",
                         delete().to(delete_comment),
+                    )
+                    .route(
+                        "/{post_id}/comments/{comment_id}",
+                        patch().to(update_comment),
                     ),
             ),
     );

@@ -49,10 +49,16 @@ POST http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/commen
 Content-Type: application/json
 
 {
-    "contents": "What is that bruh"
+    "contents": "beautiful"
 }
 
 ### DELETE Comment on Post
 DELETE http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/comments/e569e878-66a7-47ab-b650-fb8297573134
 
+### Update Comment on Post
+PATCH http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/comments/7dc4aa23-63cf-4973-8ee8-b40d336f0520
+Content-Type: application/json
 
+{
+    "contents": "EDIT: I MEANT HORRIBLE"
+}
