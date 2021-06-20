@@ -1,7 +1,10 @@
 use sqlx::{Error, PgPool};
 use uuid::Uuid;
 
-use crate::{models::Post, routes::posts::CreatePostRequest};
+use crate::{
+    models::{Like, Post},
+    routes::posts::CreatePostRequest,
+};
 
 pub struct PostsRepository<'a> {
     pub connection: &'a PgPool,
@@ -13,14 +16,14 @@ impl PostsRepository<'_> {
             .fetch_all(self.connection)
             .await;
 
-        return posts;
+        posts
     }
 
     pub async fn find_one(&self, id: &Uuid) -> Result<Option<Post>, Error> {
         let post = sqlx::query_as!(Post, "SELECT * FROM posts WHERE id = $1;", id)
             .fetch_optional(self.connection)
             .await;
-        return post;
+        post
     }
 
     pub async fn insert_one(&self, post: CreatePostRequest, user_id: Uuid) -> Result<Post, Error> {
@@ -38,7 +41,7 @@ impl PostsRepository<'_> {
         .fetch_one(self.connection)
         .await;
 
-        return post;
+        post
     }
 
     pub async fn delete_one(&self, post_id: &Uuid) -> Result<Post, Error> {
@@ -52,6 +55,52 @@ impl PostsRepository<'_> {
         .fetch_one(self.connection)
         .await;
 
-        return post;
+        post
+    }
+    pub async fn insert_like(&self, post_id: &Uuid, user_id: &Uuid) -> Result<Like, Error> {
+        let like = sqlx::query_as!(
+            Like,
+            r#"
+        INSERT INTO likes (post_id, user_id) 
+        VALUES ($1, $2) RETURNING *;
+        "#,
+            post_id,
+            user_id
+        )
+        .fetch_one(self.connection)
+        .await;
+
+        like
+    }
+
+    pub async fn delete_like(&self, post_id: &Uuid) -> Result<Like, Error> {
+        let like = sqlx::query_as!(
+            Like,
+            r#"
+        DELETE FROM likes WHERE post_id = $1 RETURNING *;
+        "#,
+            post_id
+        )
+        .fetch_one(self.connection)
+        .await;
+
+        like
+    }
+
+    pub async fn find_one_like(
+        &self,
+        post_id: &Uuid,
+        user_id: &Uuid,
+    ) -> Result<Option<Like>, Error> {
+        let like = sqlx::query_as!(
+            Like,
+            "SELECT * FROM likes WHERE user_id = $1 AND post_id = $2;",
+            user_id,
+            post_id
+        )
+        .fetch_optional(self.connection)
+        .await;
+
+        like
     }
 }

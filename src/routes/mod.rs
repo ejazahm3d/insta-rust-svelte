@@ -9,7 +9,7 @@ pub use health_check::*;
 use self::{
     auth::{current_user, login, logout, sign_up},
     comments::{create_comment, delete_comment, post_comments, update_comment},
-    posts::{create_post, delete_post, list_all_posts, post_details},
+    posts::{create_post, delete_post, like_or_dislike_post, list_all_posts, post_details},
 };
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
@@ -30,6 +30,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                     .route("", post().to(create_post))
                     .route("/{post_id}", get().to(post_details))
                     .route("/{post_id}", delete().to(delete_post))
+                    .route("/{post_id}/likes", post().to(like_or_dislike_post))
                     .route("/{post_id}/comments", get().to(post_comments))
                     .route("/{post_id}/comments", post().to(create_comment))
                     .route(

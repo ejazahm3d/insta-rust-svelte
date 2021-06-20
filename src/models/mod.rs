@@ -36,3 +36,13 @@ pub struct Comment {
     pub user_id: Uuid,
     pub post_id: Uuid,
 }
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Like {
+    pub id: Uuid,
+    pub created_at: Option<DateTime<Utc>>,
+    pub comment_id: Option<Uuid>,
+    pub user_id: Uuid,
+    pub post_id: Option<Uuid>,
+}
