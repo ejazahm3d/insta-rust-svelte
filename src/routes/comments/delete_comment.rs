@@ -4,7 +4,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 pub async fn delete_comment(
-    auth_service: AuthorizationService,
+    _auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<(Uuid, Uuid)>,
 ) -> anyhow::Result<HttpResponse, Error> {

@@ -4,7 +4,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 pub async fn delete_post(
-    auth_service: AuthorizationService,
+    _auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
 ) -> anyhow::Result<HttpResponse, Error> {
