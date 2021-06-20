@@ -1,7 +1,10 @@
 use sqlx::{Error, PgPool};
 use uuid::Uuid;
 
-use crate::{models::Comment, routes::comments::CreateCommentRequest};
+use crate::{
+    models::{Comment, Like},
+    routes::comments::CreateCommentRequest,
+};
 
 pub struct CommentsRepository<'a> {
     pub connection: &'a PgPool,
@@ -75,5 +78,52 @@ impl CommentsRepository<'_> {
         .await;
 
         return comment;
+    }
+
+    pub async fn insert_like(&self, comment_id: &Uuid, user_id: &Uuid) -> Result<Like, Error> {
+        let like = sqlx::query_as!(
+            Like,
+            r#"
+        INSERT INTO likes (comment_id, user_id) 
+        VALUES ($1, $2) RETURNING *;
+        "#,
+            comment_id,
+            user_id
+        )
+        .fetch_one(self.connection)
+        .await;
+
+        like
+    }
+
+    pub async fn delete_like(&self, comment_id: &Uuid) -> Result<Like, Error> {
+        let like = sqlx::query_as!(
+            Like,
+            r#"
+        DELETE FROM likes WHERE comment_id = $1 RETURNING *;
+        "#,
+            comment_id
+        )
+        .fetch_one(self.connection)
+        .await;
+
+        like
+    }
+
+    pub async fn find_one_like(
+        &self,
+        comment_id: &Uuid,
+        user_id: &Uuid,
+    ) -> Result<Option<Like>, Error> {
+        let like = sqlx::query_as!(
+            Like,
+            "SELECT * FROM likes WHERE user_id = $1 AND comment_id = $2;",
+            user_id,
+            comment_id
+        )
+        .fetch_optional(self.connection)
+        .await;
+
+        like
     }
 }
