@@ -2,12 +2,17 @@ pub mod auth;
 pub mod health_check;
 pub mod posts;
 
-use actix_web::web::{self, get, post};
+use actix_web::{
+    delete,
+    web::{self, delete, get, post},
+};
 pub use health_check::*;
 
 use self::{
     auth::{current_user, login, logout, sign_up},
-    posts::{create_post, list_all_posts, post_comments, post_details},
+    posts::{
+        create_comment, create_post, delete_comment, list_all_posts, post_comments, post_details,
+    },
 };
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
@@ -27,7 +32,12 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                     .route("", get().to(list_all_posts))
                     .route("", post().to(create_post))
                     .route("/{post_id}", get().to(post_details))
-                    .route("/{post_id}/comments", get().to(post_comments)),
+                    .route("/{post_id}/comments", get().to(post_comments))
+                    .route("/{post_id}/comments", post().to(create_comment))
+                    .route(
+                        "/{post_id}/comments/{comment_id}",
+                        delete().to(delete_comment),
+                    ),
             ),
     );
 }

@@ -13,7 +13,7 @@ POST http://localhost:5000/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-    "email": "test@test.com",
+    "email": "test1@test.com",
     "password": "12345678"
 }
 
@@ -31,6 +31,9 @@ GET http://localhost:5000/api/posts/03cc6436-d454-4f75-abf9-749449dfedf6
 
 ### Get Comments by Post Id
 GET http://localhost:5000/api/posts/03cc6436-d454-4f75-abf9-749449dfedf6/comments
+
+### DELETE Comment on Post
+DELETE http://localhost:5000/api/posts/03cc6436-d454-4f75-abf9-749449dfedf6/comments/fb5736c1-9e95-4c83-8289-e35b80db8360
 
 
 ### Create Post

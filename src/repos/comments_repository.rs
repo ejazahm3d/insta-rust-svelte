@@ -1,7 +1,7 @@
 use sqlx::{Error, PgPool};
 use uuid::Uuid;
 
-use crate::models::Comment;
+use crate::{models::Comment, routes::posts::CreateCommentRequest};
 
 pub struct CommentsRepository<'a> {
     pub connection: &'a PgPool,
@@ -27,25 +27,38 @@ impl CommentsRepository<'_> {
         return comment;
     }
 
-    // pub async fn insert_one(
-    //     &self,
-    //     post: CreatePostRequest,
-    //     user_id: Uuid,
-    // ) -> Result<Comment, Error> {
-    //     let post = sqlx::query_as!(
-    //         Comment,
-    //         r#"
-    //     INSERT INTO posts(url, caption, lat, lng, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;
-    //     "#,
-    //         post.url,
-    //         post.caption,
-    //         post.lat,
-    //         post.lng,
-    //         user_id
-    //     )
-    //     .fetch_one(self.connection)
-    //     .await;
+    pub async fn insert_one(
+        &self,
+        comment: &CreateCommentRequest,
+        user_id: &Uuid,
+        post_id: &Uuid,
+    ) -> Result<Comment, Error> {
+        let post = sqlx::query_as!(
+            Comment,
+            r#"
+        INSERT INTO comments(contents, user_id, post_id) VALUES ($1, $2, $3) RETURNING *;
+        "#,
+            comment.contents,
+            user_id,
+            post_id
+        )
+        .fetch_one(self.connection)
+        .await;
 
-    //     return post;
-    // }
+        return post;
+    }
+
+    pub async fn delete_one(&self, comment_id: &Uuid) -> Result<Comment, Error> {
+        let post = sqlx::query_as!(
+            Comment,
+            r#"
+        DELETE FROM comments WHERE id = $1 RETURNING *;
+        "#,
+            comment_id
+        )
+        .fetch_one(self.connection)
+        .await;
+
+        return post;
+    }
 }
