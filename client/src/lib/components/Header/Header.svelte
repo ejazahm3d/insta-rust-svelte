@@ -1,12 +1,10 @@
 <script lang="ts">
-	import agent from '$lib/api/agent';
 	import { accountsStore } from '$lib/stores';
 
 	export let isLoggedIn: boolean;
 
 	const logout = async () => {
-		await agent.Account.logout();
-		accountsStore.set({ user: null });
+		await accountsStore.logout();
 	};
 </script>
 

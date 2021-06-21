@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import agent from '$lib/api/agent';
+	import { accountsStore } from '$lib/stores';
 	import { writable } from 'svelte/store';
 
 	const user = writable({
@@ -15,7 +15,7 @@
 	async function signup() {
 		loading = true;
 		try {
-			await agent.Account.signup($user);
+			await accountsStore.signup($user);
 			loading = false;
 			await goto('/');
 		} catch (error) {

@@ -14,11 +14,9 @@
 	async function login() {
 		loading = true;
 		try {
-			const data = await agent.Account.login($user);
+			await accountsStore.login($user);
 
-			accountsStore.set({ user: data.id });
 			loading = false;
-
 			await goto('/');
 		} catch (error) {
 			loading = false;

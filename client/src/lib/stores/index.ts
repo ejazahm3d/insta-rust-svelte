@@ -1,10 +1,35 @@
-import type { Post } from '$lib/api/agent';
+import type { LoginRequest, Post, SignUpRequest } from '$lib/api/agent';
 import agent from '$lib/api/agent';
 import { writable } from 'svelte/store';
 
-export const accountsStore = writable({
-	user: null
-});
+function createAccountStore() {
+	const { subscribe, set } = writable({
+		user: null
+	});
+
+	return {
+		subscribe,
+		fetchCurrentUser: async () => {
+			const data = await agent.Account.current();
+			set({ user: data?.user });
+		},
+		login: async (user: LoginRequest) => {
+			const data = await agent.Account.login(user);
+
+			set({ user: data.id });
+		},
+		logout: async () => {
+			await agent.Account.logout();
+			set({ user: null });
+		},
+		signup: async (user: SignUpRequest) => {
+			const data = await agent.Account.signup(user);
+			set({ user: data.id });
+		}
+	};
+}
+
+export const accountsStore = createAccountStore();
 
 function createPostsStore() {
 	const { set, subscribe } = writable<{
