@@ -25,7 +25,7 @@ pub async fn like_or_dislike_post(
 
     match post_like {
         Some(_) => {
-            post_repository.delete_like(post_id).await?;
+            post_repository.delete_like(post_id, &user_id).await?;
 
             Ok(HttpResponse::Ok().finish())
         }

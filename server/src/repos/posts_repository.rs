@@ -98,13 +98,14 @@ impl PostsRepository<'_> {
         like
     }
 
-    pub async fn delete_like(&self, post_id: &Uuid) -> Result<Like, Error> {
+    pub async fn delete_like(&self, post_id: &Uuid, user_id: &Uuid) -> Result<Like, Error> {
         let like = sqlx::query_as!(
             Like,
             r#"
-        DELETE FROM likes WHERE post_id = $1 RETURNING *;
+        DELETE FROM likes WHERE post_id = $1 AND user_id = $2 RETURNING *;
         "#,
-            post_id
+            post_id,
+            user_id
         )
         .fetch_one(self.connection)
         .await;

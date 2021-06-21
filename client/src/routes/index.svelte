@@ -1,12 +1,5 @@
 <script lang="ts">
-	import agent from '$lib/api/agent';
 	import { postsStore } from '$lib/stores';
-
-	async function fetchPosts() {
-		const posts = await agent.Posts.list();
-		postsStore.set({ posts });
-		return posts;
-	}
 
 	$: posts = $postsStore.posts;
 </script>
@@ -14,7 +7,7 @@
 <div class="container">
 	<h1 class="text-center mt-5 mb-2">Welcome to SvelteKit</h1>
 
-	{#await fetchPosts()}
+	{#await postsStore.fetchPosts()}
 		<p>Fetching posts</p>
 	{:then _}
 		<div class="d-flex flex-column align-items-center">
@@ -29,6 +22,9 @@
 						<p>Likes: {post.likes}</p>
 						<p>Comments: {post.comments}</p>
 						<a class="btn btn-primary mb-3" href={`/posts/${post.id}`}>Details</a>
+						<button class="btn btn-primary mb-3" on:click={() => postsStore.likePost(post.id)}
+							>Like</button
+						>
 					</div>
 				</div>
 			{/each}
