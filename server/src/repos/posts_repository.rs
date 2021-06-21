@@ -1,6 +1,7 @@
 use sqlx::{Error, PgPool};
 use uuid::Uuid;
 
+use crate::routes::posts::LikesByPostResponse;
 use crate::{
     models::{Like, Post},
     routes::posts::{CreatePostRequest, ListPostsResponse},
@@ -128,10 +129,20 @@ impl PostsRepository<'_> {
         like
     }
 
-    pub async fn find_many_likes(&self, post_id: &Uuid) -> Result<Vec<Like>, Error> {
-        let likes = sqlx::query_as!(Like, "SELECT * FROM likes WHERE post_id = $1;", post_id)
-            .fetch_all(self.connection)
-            .await;
+    pub async fn find_many_likes(&self, post_id: &Uuid) -> Result<Vec<LikesByPostResponse>, Error> {
+        let likes = sqlx::query_as!(
+            LikesByPostResponse,
+            r#"
+        SELECT l.id, l.created_at, username, user_id, post_id
+        FROM likes l
+        JOIN users u
+            ON u.id = l.user_id
+        WHERE l.post_id = $1;
+        "#,
+            post_id
+        )
+        .fetch_all(self.connection)
+        .await;
 
         likes
     }

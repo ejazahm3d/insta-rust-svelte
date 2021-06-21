@@ -26,11 +26,18 @@ export interface Post {
 	comments: number;
 }
 
+interface Like {
+	id: string;
+	createdAt: string;
+	userId: string;
+	username: string;
+	postId: string;
+}
+
 const Posts = {
 	list: (): Promise<Post[]> => requests.get<Post[]>('/posts'),
 	details: (postId: string): Promise<Post> => requests.get<Post>(`/posts/${postId}`),
-
-	listLikes: (postId: string): Promise<any[]> => requests.get<any[]>(`/posts/${postId}/likes`)
+	listLikes: (postId: string): Promise<Like[]> => requests.get<Like[]>(`/posts/${postId}/likes`)
 };
 
 export interface LoginRequest {

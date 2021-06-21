@@ -17,7 +17,7 @@
 		{#each likes as like}
 			<div class="card mt-3">
 				<div class="card-body">
-					Liked By: {like.userId}
+					Liked By: {like.username}
 				</div>
 			</div>
 		{/each}

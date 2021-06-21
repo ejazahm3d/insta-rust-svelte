@@ -12,7 +12,7 @@ use self::{
         create_comment, delete_comment, like_or_dislike_comment, post_comments, update_comment,
     },
     posts::{
-        all_likes_by_post, create_post, delete_post, like_or_dislike_post, list_all_posts,
+        likes_by_post, create_post, delete_post, like_or_dislike_post, list_all_posts,
         post_details,
     },
 };
@@ -35,7 +35,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                     .route("", post().to(create_post))
                     .route("/{post_id}", get().to(post_details))
                     .route("/{post_id}", delete().to(delete_post))
-                    .route("/{post_id}/likes", get().to(all_likes_by_post))
+                    .route("/{post_id}/likes", get().to(likes_by_post))
                     .route("/{post_id}/likes", post().to(like_or_dislike_post))
                     .route("/{post_id}/comments", get().to(post_comments))
                     .route("/{post_id}/comments", post().to(create_comment))

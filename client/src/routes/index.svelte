@@ -1,9 +1,14 @@
 <script lang="ts">
 	import agent from '$lib/api/agent';
+	import { postsStore } from '$lib/stores';
 
 	async function fetchPosts() {
-		return await agent.Posts.list();
+		const posts = await agent.Posts.list();
+		postsStore.set({ posts });
+		return posts;
 	}
+
+	$: posts = $postsStore.posts;
 </script>
 
 <div class="container">
@@ -11,7 +16,7 @@
 
 	{#await fetchPosts()}
 		<p>Fetching posts</p>
-	{:then posts}
+	{:then _}
 		<div class="d-flex flex-column align-items-center">
 			{#each posts as post}
 				<div class="card m-5">
@@ -20,9 +25,10 @@
 						<p class="card-text">
 							{post.caption}
 						</p>
-						<a class="btn btn-primary" href={`/posts/${post.id}`}>Details</a>
+						<p>Created by: {post.username}</p>
 						<p>Likes: {post.likes}</p>
 						<p>Comments: {post.comments}</p>
+						<a class="btn btn-primary mb-3" href={`/posts/${post.id}`}>Details</a>
 					</div>
 				</div>
 			{/each}
