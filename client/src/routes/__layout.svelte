@@ -1,7 +1,9 @@
 <script>
+	import Header from '$lib/components/Header/Header.svelte';
 	import agent from '$lib/api/agent';
 	import { accountsStore } from '$lib/stores/index';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
+	import '../styles/global.css';
 
 	onMount(async () => {
 		const data = await agent.Account.current();
@@ -11,32 +13,8 @@
 	$: isLoggedIn = !!$accountsStore?.user;
 </script>
 
-<ul>
-	<li>
-		<a href="/"> Home </a>
-	</li>
+<Header {isLoggedIn} />
 
-	{#if isLoggedIn}
-		<li>
-			<button
-				on:click={() => {
-					agent.Account.logout();
-					accountsStore.set({ user: null });
-				}}
-			>
-				Logout
-			</button>
-		</li>
-	{:else}
-		<li>
-			<a href="/auth/login"> Login </a>
-		</li>
-
-		<li>
-			<a href="/auth/signup"> Signup </a>
-		</li>
-	{/if}
-</ul>
 <main>
 	<slot />
 </main>
