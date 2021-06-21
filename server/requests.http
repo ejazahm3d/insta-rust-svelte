@@ -41,6 +41,9 @@ DELETE http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a
 ### Get Post by Id
 GET http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a
 
+### Get Post likes by postID
+GET http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/likes
+
 ### Like or Dislike a post
 POST http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/likes
 

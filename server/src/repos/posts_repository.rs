@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::{
     models::{Like, Post},
-    routes::posts::CreatePostRequest,
+    routes::posts::{CreatePostRequest, ListPostsResponse},
 };
 
 pub struct PostsRepository<'a> {
@@ -11,10 +11,34 @@ pub struct PostsRepository<'a> {
 }
 
 impl PostsRepository<'_> {
-    pub async fn find_many(&self) -> Result<Vec<Post>, Error> {
-        let posts = sqlx::query_as!(Post, "SELECT * FROM posts;")
-            .fetch_all(self.connection)
-            .await;
+    pub async fn find_many(&self) -> Result<Vec<ListPostsResponse>, Error> {
+        let posts = sqlx::query_as!(
+            ListPostsResponse,
+            r#"
+    SELECT p.id,
+            caption,
+            url,
+            lat,
+            lng,
+            p.updated_at,
+            p.created_at,
+            username,
+            p.user_id,
+            COUNT(distinct l.id) as likes,
+            COUNT(distinct c.id) as comments
+     
+     FROM posts p
+              JOIN users u
+                   ON p.user_id = u.id
+              LEFT JOIN likes l
+                        ON p.id = l.post_id
+              LEFT JOIN comments c
+                        ON p.id = c.post_id
+     GROUP BY p.id, u.id;
+ "#
+        )
+        .fetch_all(self.connection)
+        .await;
 
         posts
     }
@@ -102,5 +126,13 @@ impl PostsRepository<'_> {
         .await;
 
         like
+    }
+
+    pub async fn find_many_likes(&self, post_id: &Uuid) -> Result<Vec<Like>, Error> {
+        let likes = sqlx::query_as!(Like, "SELECT * FROM likes WHERE post_id = $1;", post_id)
+            .fetch_all(self.connection)
+            .await;
+
+        likes
     }
 }

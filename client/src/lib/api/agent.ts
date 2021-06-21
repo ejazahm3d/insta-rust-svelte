@@ -14,13 +14,23 @@ const requests = {
 
 export interface Post {
 	id: string;
+	createdAt: Date;
+	updatedAt: Date;
 	url: string;
 	caption: string;
+	lat?: number;
+	lng?: number;
 	userId: string;
+	username: string;
+	likes: number;
+	comments: number;
 }
 
 const Posts = {
-	list: (): Promise<Post[]> => requests.get<Post[]>('/posts')
+	list: (): Promise<Post[]> => requests.get<Post[]>('/posts'),
+	details: (postId: string): Promise<Post> => requests.get<Post>(`/posts/${postId}`),
+
+	listLikes: (postId: string): Promise<any[]> => requests.get<any[]>(`/posts/${postId}/likes`)
 };
 
 export interface LoginRequest {
@@ -55,4 +65,17 @@ const Account = {
 	logout: (): Promise<unknown> => requests.post('/auth/logout', {})
 };
 
-export default { Posts, Account };
+interface Comment {
+	id: string;
+	createdAt: string;
+	updatedAt: string;
+	contents: string;
+	userId: string;
+	postId: string;
+}
+
+const Comments = {
+	list: (postId: string): Promise<Comment[]> => requests.get<Comment[]>(`/posts/${postId}/comments`)
+};
+
+export default { Posts, Account, Comments };
