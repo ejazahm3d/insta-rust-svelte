@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::{
     models::{Comment, Like},
-    routes::comments::CreateCommentRequest,
+    routes::comments::{CreateCommentRequest, LikesByCommentResponse},
 };
 
 pub struct CommentsRepository<'a> {
@@ -125,5 +125,26 @@ impl CommentsRepository<'_> {
         .await;
 
         like
+    }
+
+    pub async fn find_many_likes(
+        &self,
+        comment_id: &Uuid,
+    ) -> Result<Vec<LikesByCommentResponse>, Error> {
+        let likes = sqlx::query_as!(
+            LikesByCommentResponse,
+            r#"
+        SELECT l.id, l.created_at, username, user_id, comment_id
+        FROM likes l
+        JOIN users u
+            ON u.id = l.user_id
+        WHERE l.comment_id = $1;
+        "#,
+            comment_id
+        )
+        .fetch_all(self.connection)
+        .await;
+
+        likes
     }
 }

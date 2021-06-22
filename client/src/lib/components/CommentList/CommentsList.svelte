@@ -1,7 +1,7 @@
 <script lang="ts">
-	import agent from '$lib/api/agent';
 	import { accountsStore, commentsStore } from '$lib/stores';
 	import { onMount } from 'svelte';
+	import CommentLikes from '$lib/components/CommentList/CommentLikes.svelte';
 
 	export let postId: string;
 
@@ -23,23 +23,26 @@
 				{comment.contents}
 			</div>
 
-			{#if isLoggedIn}
-				<button
-					class="btn btn-primary"
-					on:click={async () => await commentsStore.likeComment(postId, comment.id)}
-				>
-					Like
-				</button>
-			{/if}
+			<CommentLikes {postId} commentId={comment.id} />
+			<div class="d-flex">
+				{#if isLoggedIn}
+					<button
+						class="btn btn-primary"
+						on:click={async () => await commentsStore.likeComment(postId, comment.id)}
+					>
+						Like
+					</button>
+				{/if}
 
-			{#if currentUser?.id === comment.userId}
-				<button
-					class="btn btn-danger"
-					on:click={async () => await commentsStore.deleteComment(postId, comment.id)}
-				>
-					Delete
-				</button>
-			{/if}
+				{#if currentUser?.id === comment.userId}
+					<button
+						class="btn btn-danger"
+						on:click={async () => await commentsStore.deleteComment(postId, comment.id)}
+					>
+						Delete
+					</button>
+				{/if}
+			</div>
 		</div>
 	{/each}
 </div>

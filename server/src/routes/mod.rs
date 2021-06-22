@@ -9,11 +9,11 @@ pub use health_check::*;
 use self::{
     auth::{current_user, login, logout, sign_up},
     comments::{
-        create_comment, delete_comment, like_or_dislike_comment, post_comments, update_comment,
+        create_comment, delete_comment, like_or_dislike_comment, likes_by_comment, post_comments,
+        update_comment,
     },
     posts::{
-        likes_by_post, create_post, delete_post, like_or_dislike_post, list_all_posts,
-        post_details,
+        create_post, delete_post, like_or_dislike_post, likes_by_post, list_all_posts, post_details,
     },
 };
 
@@ -46,6 +46,10 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                     .route(
                         "/{post_id}/comments/{comment_id}",
                         patch().to(update_comment),
+                    )
+                    .route(
+                        "/{post_id}/comments/{comment_id}/likes",
+                        get().to(likes_by_comment),
                     )
                     .route(
                         "/{post_id}/comments/{comment_id}/likes",

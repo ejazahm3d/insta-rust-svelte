@@ -78,7 +78,7 @@ function createPostsStore() {
 export const postsStore = createPostsStore();
 
 function createCommentsStore() {
-	const { set, subscribe, update } = writable<{
+	const { subscribe, update } = writable<{
 		currentPost: Post;
 		comments: Comment[];
 	}>({
@@ -104,6 +104,11 @@ function createCommentsStore() {
 		},
 		deleteComment: async (postId: string, commentId: string) => {
 			await agent.Comments.delete(postId, commentId);
+			const comments = await agent.Comments.list(postId);
+			update((v) => ({ ...v, comments }));
+		},
+		fetchLikesForComment: async (postId: string, commentId: string) => {
+			await agent.Comments.listLikes(postId, commentId);
 			const comments = await agent.Comments.list(postId);
 			update((v) => ({ ...v, comments }));
 		}
