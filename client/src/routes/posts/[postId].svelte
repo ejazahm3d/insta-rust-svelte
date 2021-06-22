@@ -5,17 +5,12 @@
 	import CreateComment from '$lib/components/CreateComment/CreateComment.svelte';
 	import LikesList from '$lib/components/LikesList/LikesList.svelte';
 	import { accountsStore } from '$lib/stores';
-	import { onMount } from 'svelte';
 
 	let postId = $page.params.postId;
 
 	function fetchPost() {
 		return agent.Posts.details(postId);
 	}
-
-	onMount(() => {
-		console.log('hello' + postId);
-	});
 
 	$: isLoggedIn = $accountsStore.user;
 </script>

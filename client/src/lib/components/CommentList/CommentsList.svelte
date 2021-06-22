@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { accountsStore, commentsStore } from '$lib/stores';
 	import { onMount } from 'svelte';
-	import CommentLikes from '$lib/components/CommentList/CommentLikes.svelte';
 
 	export let postId: string;
 
