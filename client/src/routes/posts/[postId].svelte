@@ -20,23 +20,21 @@
 	$: isLoggedIn = $accountsStore.user;
 </script>
 
-<h1>
-	Welcome {postId}
-</h1>
+<div class="container d-flex flex-column">
+	{#await fetchPost()}
+		<div>Fetching single post</div>
+	{:then post}
+		<div>
+			{post.caption}
+		</div>
+		<img src={post.url} alt={post.url} />
+		<LikesList postId={post.id} />
 
-{#await fetchPost()}
-	<div>Fetching single post</div>
-{:then post}
-	<div>
-		{post.caption}
-	</div>
-	<img src={post.url} alt={post.url} />
-	<LikesList postId={post.id} />
-
-	{#if isLoggedIn}
-		<CreateComment postId={post.id} />
-	{/if}
-	<CommentsList postId={post.id} />
-{:catch}
-	<div>Error loading post</div>
-{/await}
+		{#if isLoggedIn}
+			<CreateComment postId={post.id} />
+		{/if}
+		<CommentsList postId={post.id} />
+	{:catch}
+		<div>Error loading post</div>
+	{/await}
+</div>
