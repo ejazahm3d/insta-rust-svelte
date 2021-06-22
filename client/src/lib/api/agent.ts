@@ -80,7 +80,7 @@ const Account = {
 	logout: (): Promise<unknown> => requests.post('/auth/logout', {})
 };
 
-interface Comment {
+export interface Comment {
 	id: string;
 	createdAt: string;
 	updatedAt: string;
@@ -89,8 +89,19 @@ interface Comment {
 	postId: string;
 }
 
+export interface CreateComment {
+	contents: string;
+}
+
 const Comments = {
-	list: (postId: string): Promise<Comment[]> => requests.get<Comment[]>(`/posts/${postId}/comments`)
+	list: (postId: string): Promise<Comment[]> => requests.get(`/posts/${postId}/comments`),
+	create: (postId: string, comment: CreateComment): Promise<Comment> =>
+		requests.post(`/posts/${postId}/comments`, comment),
+	like: (postId: string, commentId: string): Promise<unknown> =>
+		requests.post(`/posts/${postId}/comments/${commentId}/likes`, {}),
+
+	delete: (postId: string, commentId: string): Promise<Comment> =>
+		requests.delete(`/posts/${postId}/comments/${commentId}`)
 };
 
 export default { Posts, Account, Comments };

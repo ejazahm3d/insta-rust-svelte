@@ -1,24 +1,45 @@
 <script lang="ts">
 	import agent from '$lib/api/agent';
+	import { accountsStore, commentsStore } from '$lib/stores';
+	import { onMount } from 'svelte';
 
 	export let postId: string;
-	async function fetchComments() {
-		return await agent.Comments.list(postId);
-	}
+
+	onMount(async () => {
+		await commentsStore.fetchComments(postId);
+	});
+
+	$: comments = $commentsStore.comments;
+	$: currentUser = $accountsStore.user;
+	$: isLoggedIn = !!$accountsStore.user;
 </script>
 
 <h2 class="mb-5">Comment List</h2>
 
-{#await fetchComments()}
-	<div>Fetching comments</div>
-{:then comments}
-	<div>
-		{#each comments as comment}
-			<div class="card mt-3">
-				<div class="card-body">
-					{comment.contents}
-				</div>
+<div>
+	{#each comments as comment}
+		<div class="card mt-3">
+			<div class="card-body">
+				{comment.contents}
 			</div>
-		{/each}
-	</div>
-{/await}
+
+			{#if isLoggedIn}
+				<button
+					class="btn btn-primary"
+					on:click={async () => await commentsStore.likeComment(postId, comment.id)}
+				>
+					Like
+				</button>
+			{/if}
+
+			{#if currentUser?.id === comment.userId}
+				<button
+					class="btn btn-danger"
+					on:click={async () => await commentsStore.deleteComment(postId, comment.id)}
+				>
+					Delete
+				</button>
+			{/if}
+		</div>
+	{/each}
+</div>
