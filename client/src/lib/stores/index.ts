@@ -1,4 +1,4 @@
-import type { LoginRequest, Post, SignUpRequest } from '$lib/api/agent';
+import type { CreatePost, LoginRequest, Post, SignUpRequest } from '$lib/api/agent';
 import agent from '$lib/api/agent';
 import { writable } from 'svelte/store';
 
@@ -49,6 +49,11 @@ function createPostsStore() {
 			await agent.Posts.like(postId);
 			const posts = await agent.Posts.list();
 
+			set({ posts });
+		},
+		createPost: async (post: CreatePost) => {
+			await agent.Posts.createPost(post);
+			const posts = await agent.Posts.list();
 			set({ posts });
 		}
 	};

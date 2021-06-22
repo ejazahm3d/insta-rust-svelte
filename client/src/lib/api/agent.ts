@@ -34,11 +34,17 @@ interface Like {
 	postId: string;
 }
 
+export interface CreatePost {
+	url: string;
+	caption: string;
+}
+
 const Posts = {
-	list: (): Promise<Post[]> => requests.get<Post[]>('/posts'),
-	details: (postId: string): Promise<Post> => requests.get<Post>(`/posts/${postId}`),
-	listLikes: (postId: string): Promise<Like[]> => requests.get<Like[]>(`/posts/${postId}/likes`),
-	like: (postId: string): Promise<unknown> => requests.post(`/posts/${postId}/likes`, null)
+	list: (): Promise<Post[]> => requests.get('/posts'),
+	details: (postId: string): Promise<Post> => requests.get(`/posts/${postId}`),
+	listLikes: (postId: string): Promise<Like[]> => requests.get(`/posts/${postId}/likes`),
+	like: (postId: string): Promise<unknown> => requests.post(`/posts/${postId}/likes`, null),
+	createPost: (post: CreatePost): Promise<Post> => requests.post(`/posts`, post)
 };
 
 export interface LoginRequest {

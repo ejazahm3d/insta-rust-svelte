@@ -1,11 +1,20 @@
 <script lang="ts">
-	import { postsStore } from '$lib/stores';
+	import CreatePost from '$lib/components/CreatePost/CreatePost.svelte';
+
+	import { postsStore, accountsStore } from '$lib/stores';
 
 	$: posts = $postsStore.posts;
+	$: isLoggedIn = $accountsStore.user;
 </script>
 
 <div class="container">
 	<h1 class="text-center mt-5 mb-2">Welcome to SvelteKit</h1>
+
+	{#if isLoggedIn}
+		<div class="d-flex flex-column align-items-center">
+			<CreatePost />
+		</div>
+	{/if}
 
 	{#await postsStore.fetchPosts()}
 		<p>Fetching posts</p>
