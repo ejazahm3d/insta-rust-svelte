@@ -31,9 +31,18 @@
 						<p>Likes: {post.likes}</p>
 						<p>Comments: {post.comments}</p>
 						<a class="btn btn-primary mb-3" href={`/posts/${post.id}`}>Details</a>
-						<button class="btn btn-primary mb-3" on:click={() => postsStore.likePost(post.id)}
-							>Like</button
-						>
+
+						{#if isLoggedIn}
+							<button class="btn btn-primary mb-3" on:click={() => postsStore.likePost(post.id)}
+								>Like</button
+							>
+						{/if}
+
+						{#if $accountsStore.user?.id === post.userId}
+							<button class="btn btn-danger mb-3" on:click={() => postsStore.deletePost(post.id)}
+								>Delete</button
+							>
+						{/if}
 					</div>
 				</div>
 			{/each}

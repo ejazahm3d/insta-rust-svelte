@@ -3,7 +3,11 @@ import agent from '$lib/api/agent';
 import { writable } from 'svelte/store';
 
 function createAccountStore() {
-	const { subscribe, set } = writable({
+	const { subscribe, set } = writable<{
+		user: {
+			id: string;
+		};
+	}>({
 		user: null
 	});
 
@@ -16,7 +20,7 @@ function createAccountStore() {
 		login: async (user: LoginRequest) => {
 			const data = await agent.Account.login(user);
 
-			set({ user: data.id });
+			set({ user: { id: data.id } });
 		},
 		logout: async () => {
 			await agent.Account.logout();
@@ -24,7 +28,7 @@ function createAccountStore() {
 		},
 		signup: async (user: SignUpRequest) => {
 			const data = await agent.Account.signup(user);
-			set({ user: data.id });
+			set({ user: { id: data.id } });
 		}
 	};
 }
@@ -53,6 +57,11 @@ function createPostsStore() {
 		},
 		createPost: async (post: CreatePost) => {
 			await agent.Posts.createPost(post);
+			const posts = await agent.Posts.list();
+			set({ posts });
+		},
+		deletePost: async (postId: string) => {
+			await agent.Posts.deletePost(postId);
 			const posts = await agent.Posts.list();
 			set({ posts });
 		}

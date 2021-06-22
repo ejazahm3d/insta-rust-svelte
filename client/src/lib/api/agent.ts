@@ -44,7 +44,8 @@ const Posts = {
 	details: (postId: string): Promise<Post> => requests.get(`/posts/${postId}`),
 	listLikes: (postId: string): Promise<Like[]> => requests.get(`/posts/${postId}/likes`),
 	like: (postId: string): Promise<unknown> => requests.post(`/posts/${postId}/likes`, null),
-	createPost: (post: CreatePost): Promise<Post> => requests.post(`/posts`, post)
+	createPost: (post: CreatePost): Promise<Post> => requests.post(`/posts`, post),
+	deletePost: (postId: string): Promise<unknown> => requests.delete(`/posts/${postId}`)
 };
 
 export interface LoginRequest {
