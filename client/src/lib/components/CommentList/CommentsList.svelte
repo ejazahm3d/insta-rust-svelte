@@ -23,7 +23,7 @@
 				{comment.contents}
 			</div>
 
-			<CommentLikes {postId} commentId={comment.id} />
+			<div>likes: {comment.likes}</div>
 			<div class="d-flex">
 				{#if isLoggedIn}
 					<button

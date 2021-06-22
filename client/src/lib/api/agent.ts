@@ -86,7 +86,9 @@ export interface Comment {
 	updatedAt: string;
 	contents: string;
 	userId: string;
+	username: string;
 	postId: string;
+	likes: number;
 }
 
 export interface CreateComment {
