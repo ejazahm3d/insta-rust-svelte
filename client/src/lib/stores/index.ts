@@ -71,6 +71,10 @@ function createPostsStore() {
 			await agent.Posts.deletePost(postId);
 			const posts = await agent.Posts.list();
 			set({ posts });
+		},
+		uploadPhoto: async (image: Blob) => {
+			const res = await agent.Posts.uploadPhoto(image);
+			return res.data;
 		}
 	};
 }

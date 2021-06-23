@@ -45,7 +45,18 @@ const Posts = {
 	listLikes: (postId: string): Promise<Like[]> => requests.get(`/posts/${postId}/likes`),
 	like: (postId: string): Promise<unknown> => requests.post(`/posts/${postId}/likes`, null),
 	createPost: (post: CreatePost): Promise<Post> => requests.post(`/posts`, post),
-	deletePost: (postId: string): Promise<unknown> => requests.delete(`/posts/${postId}`)
+	deletePost: (postId: string): Promise<unknown> => requests.delete(`/posts/${postId}`),
+	uploadPhoto: (image: Blob): Promise<AxiosResponse<{ filepath?: string }>> => {
+		const formData = new FormData();
+
+		formData.append('file', image);
+
+		return axios.post(`/posts/upload`, formData, {
+			headers: {
+				'Content-type': 'multipart/form-data'
+			}
+		});
+	}
 };
 
 export interface LoginRequest {

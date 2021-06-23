@@ -22,7 +22,7 @@
 		<div class="d-flex flex-column align-items-center">
 			{#each posts as post}
 				<div class="card m-5">
-					<img class="card-img-top" src={post.url} alt={post.caption} />
+					<img class="card-img-top" src={`http://localhost:5000${post.url}`} alt={post.caption} />
 					<div class="card-body">
 						<p class="card-text">
 							{post.caption}

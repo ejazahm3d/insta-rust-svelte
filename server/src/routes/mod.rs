@@ -3,6 +3,7 @@ pub mod comments;
 pub mod health_check;
 pub mod posts;
 
+use actix_files as fs;
 use actix_web::web::{self, delete, get, patch, post};
 pub use health_check::*;
 
@@ -13,12 +14,15 @@ use self::{
         update_comment,
     },
     posts::{
-        create_post, delete_post, like_or_dislike_post, likes_by_post, list_all_posts, post_details,
+        create_post, delete_post, like_or_dislike_post, likes_by_post, list_all_posts,
+        post_details, upload_post_photo,
     },
 };
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg.route("/health_check", get().to(health_check));
+
+    cfg.service(fs::Files::new("/tmp", "./tmp/").show_files_listing());
 
     cfg.service(
         web::scope("/api")
@@ -33,6 +37,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                 web::scope("/posts")
                     .route("", get().to(list_all_posts))
                     .route("", post().to(create_post))
+                    .route("/upload", post().to(upload_post_photo))
                     .route("/{post_id}", get().to(post_details))
                     .route("/{post_id}", delete().to(delete_post))
                     .route("/{post_id}/likes", get().to(likes_by_post))
