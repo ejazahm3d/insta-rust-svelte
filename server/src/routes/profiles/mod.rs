@@ -1,3 +1,3 @@
-pub mod me;
+pub mod profile_details;
 
-pub use me::*;
+pub use profile_details::*;

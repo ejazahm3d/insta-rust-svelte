@@ -11,7 +11,7 @@
 	$: isLoggedIn = !!$accountsStore?.user;
 </script>
 
-<Header {isLoggedIn} />
+<Header {isLoggedIn} userId={$accountsStore.user?.id} />
 
 <main>
 	<slot />

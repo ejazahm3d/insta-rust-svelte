@@ -2,6 +2,7 @@
 	import { accountsStore } from '$lib/stores';
 
 	export let isLoggedIn: boolean;
+	export let userId: string;
 
 	const logout = async () => {
 		await accountsStore.logout();
@@ -31,7 +32,7 @@
 					<button class="btn btn-danger " on:click={logout}>Logout</button>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/dashboard">Profile</a>
+					<a class="nav-link" href={`/profiles/${userId}`}>Profile</a>
 				</li>
 			{:else}
 				<li class="nav-item">

@@ -14,13 +14,15 @@ pub struct UserProfileResponse {
     pub avatar: Option<String>,
 }
 
-pub async fn me(
-    auth_service: AuthorizationService,
+pub async fn profile_details(
+    _auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
+    path: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
     let profiles_repository = ProfilesRepository { connection: &conn };
+    let user_id = &path;
 
-    let profile = profiles_repository.fine_one(&auth_service.id).await?;
+    let profile = profiles_repository.fine_one(user_id).await?;
 
     Ok(HttpResponse::Ok().json(profile))
 }
