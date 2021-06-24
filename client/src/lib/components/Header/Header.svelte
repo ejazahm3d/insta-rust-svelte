@@ -30,6 +30,9 @@
 				<li class="nav-item">
 					<button class="btn btn-danger " on:click={logout}>Logout</button>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/dashboard">Profile</a>
+				</li>
 			{:else}
 				<li class="nav-item">
 					<a class="nav-link" href="/auth/signup">Sign Up</a>

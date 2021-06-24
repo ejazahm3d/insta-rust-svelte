@@ -17,6 +17,11 @@ Content-Type: application/json
     "password": "12345678"
 }
 
+
+### User Profile
+
+GET http://localhost:5000/api/profiles/me 
+
 ### Current User
 GET http://localhost:5000/api/auth/current 
 

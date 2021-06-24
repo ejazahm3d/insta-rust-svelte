@@ -22,7 +22,7 @@
 		<div>
 			{post.caption}
 		</div>
-		<img src={post.url} alt={post.url} />
+		<img src={`http://localhost:5000${post.url}`} alt={post.url} />
 		<LikesList postId={post.id} />
 
 		{#if isLoggedIn}
@@ -33,3 +33,9 @@
 		<div>Error loading post</div>
 	{/await}
 </div>
+
+<style>
+	img {
+		max-width: 40rem;
+	}
+</style>
