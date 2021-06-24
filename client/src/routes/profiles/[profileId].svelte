@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 
-	import { profilesStore } from '$lib/stores';
+	import { profilesStore } from '$lib/stores/index';
 
 	import { onMount } from 'svelte';
 
