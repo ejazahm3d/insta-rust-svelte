@@ -1,9 +1,16 @@
 <script lang="ts">
 	import { postsStore } from '$lib/stores';
+	import { writable } from 'svelte/store';
 
-	let files: FileList,
-		avatar: string,
-		caption = '';
+	const store = writable<{
+		files: FileList;
+		avatar: string;
+		caption: string;
+	}>({
+		files: null,
+		avatar: '',
+		caption: ''
+	});
 
 	const onFileSelected = (
 		e: Event & {
@@ -14,7 +21,7 @@
 		let reader = new FileReader();
 		reader.readAsDataURL(image);
 		reader.onload = (e) => {
-			avatar = e.target.result as string;
+			$store.avatar = e.target.result as string;
 		};
 	};
 
@@ -23,16 +30,13 @@
 	async function onSubmit() {
 		loading = true;
 		try {
-			postsStore.uploadPhoto(files[0]).then(async (data) => {
-				await postsStore.createPost({ caption: caption, url: data.filepath }).catch(() => {
-					console.log('something went wrong');
-				});
-				files = null;
-			});
-			loading = false;
-			caption = '';
+			const data = await postsStore.uploadPhoto($store.files[0]);
+			await postsStore.createPost({ caption: $store.caption, url: data.filepath });
 		} catch (error) {
 			console.error(error.response.data);
+			loading = false;
+		} finally {
+			store.set({ files: null, avatar: '', caption: '' });
 			loading = false;
 		}
 	}
@@ -48,14 +52,14 @@
 			class="form-control"
 			rows="5"
 			cols="100"
-			bind:value={caption}
+			bind:value={$store.caption}
 			required
 		/>
 	</div>
 
 	<div>
-		{#if avatar}
-			<img src={avatar} alt="post uplaod" />
+		{#if $store.avatar}
+			<img src={$store.avatar} alt="post uplaod" />
 		{/if}
 
 		<input
@@ -64,7 +68,7 @@
 			id="img"
 			accept=".jpg, .jpeg, .png"
 			on:change={onFileSelected}
-			bind:files
+			bind:files={$store.files}
 			required
 		/>
 	</div>
