@@ -8,7 +8,7 @@
 </script>
 
 <div class="container">
-	<h1 class="text-center mt-5 mb-2">Welcome to SvelteKit</h1>
+	<h1 class="text-center mt-5 mb-2">Welcome to InstaClone</h1>
 
 	{#if isLoggedIn}
 		<div class="d-flex flex-column align-items-center">

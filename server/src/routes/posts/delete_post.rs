@@ -27,6 +27,20 @@ pub async fn delete_post(
 
     match is_owner {
         true => {
+            // delete image
+            let filepath = format!(".{}", post.url);
+            web::block(|| std::fs::remove_file(filepath))
+                .await
+                .map_err(|e| {
+                    eprintln!("{}", e);
+                    Error::InternalServerError
+                })?
+                .map_err(|e| {
+                    eprintln!("{}", e);
+                    Error::InternalServerError
+                })?;
+
+            // delete post
             let post = post_repository.delete_one(post_id).await?;
 
             Ok(HttpResponse::Ok().json(post))
