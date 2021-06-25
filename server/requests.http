@@ -13,7 +13,7 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "test1@test.com",
+    "email": "test@test.com",
     "password": "12345678"
 }
 
@@ -79,7 +79,8 @@ GET http://localhost:5000/api/leaders/9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab
 
 ### follow or unfollow someone
 POST http://localhost:5000/api/followers
+Content-Type: application/json
 
 {
-    "leader_id": "9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab" 
+    "leaderId": "9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab"
 }
