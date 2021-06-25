@@ -70,3 +70,16 @@ Content-Type: application/json
 {
     "contents": "EDIT: I MEANT HORRIBLE"
 }
+
+### Get Followers by leader id
+GET http://localhost:5000/api/followers/9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab
+
+### get leaders by follower id
+GET http://localhost:5000/api/leaders/9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab
+
+### follow or unfollow someone
+POST http://localhost:5000/api/followers
+
+{
+    "leader_id": "9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab" 
+}

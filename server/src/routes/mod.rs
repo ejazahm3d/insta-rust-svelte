@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod comments;
+pub mod followers_leaders;
 pub mod health_check;
 pub mod posts;
 pub mod profiles;
@@ -63,6 +64,15 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                         "/{post_id}/comments/{comment_id}/likes",
                         post().to(like_or_dislike_comment),
                     ),
+            )
+            .service(
+                web::scope("/followers")
+                    .route("/{leader_id}", get().to(followers_leaders::followers))
+                    .route("", post().to(followers_leaders::follow_or_unfollow)),
+            )
+            .service(
+                web::scope("/leaders")
+                    .route("/{follower_id}", get().to(followers_leaders::leaders)),
             ),
     );
 }

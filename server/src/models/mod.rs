@@ -46,3 +46,12 @@ pub struct Like {
     pub user_id: Uuid,
     pub post_id: Option<Uuid>,
 }
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Follower {
+    pub id: Uuid,
+    pub created_at: Option<DateTime<Utc>>,
+    pub leader_id: Uuid,
+    pub follower_id: Uuid,
+}
