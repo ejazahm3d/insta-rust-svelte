@@ -74,8 +74,14 @@ Content-Type: application/json
 ### Get Followers by leader id
 GET http://localhost:5000/api/followers/9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab
 
+### Get Followers COUNT by leader id
+GET http://localhost:5000/api/followers/9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab/count
+
 ### get leaders by follower id
 GET http://localhost:5000/api/leaders/9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab
+
+### get leaders COUNT by follower id
+GET http://localhost:5000/api/leaders/9fd3eea7-f7b3-4b78-98d2-d3fe7a39efab/count
 
 ### follow or unfollow someone
 POST http://localhost:5000/api/followers

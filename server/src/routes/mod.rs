@@ -67,12 +67,20 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
             )
             .service(
                 web::scope("/followers")
+                    .route("", post().to(followers_leaders::follow_or_unfollow))
                     .route("/{leader_id}", get().to(followers_leaders::followers))
-                    .route("", post().to(followers_leaders::follow_or_unfollow)),
+                    .route(
+                        "/{leader_id}/count",
+                        get().to(followers_leaders::followers_count),
+                    ),
             )
             .service(
                 web::scope("/leaders")
-                    .route("/{follower_id}", get().to(followers_leaders::leaders)),
+                    .route("/{follower_id}", get().to(followers_leaders::leaders))
+                    .route(
+                        "/{follower_id}/count",
+                        get().to(followers_leaders::leaders_count),
+                    ),
             ),
     );
 }

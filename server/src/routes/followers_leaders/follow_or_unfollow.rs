@@ -34,6 +34,7 @@ pub async fn follow_or_unfollow(
             if follower_id == leader_id {
                 return Ok(HttpResponse::BadRequest().body("cant follow your own self"));
             }
+
             let follower = followers_repository.follow(leader_id, follower_id).await?;
             Ok(HttpResponse::Ok().json(follower))
         }

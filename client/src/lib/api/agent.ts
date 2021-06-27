@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { Account } from './account';
 import { Comments } from './comment';
+import { Followers, Leaders } from './followers-leaders';
 import { Posts } from './post';
 import { Profiles } from './profile';
 
@@ -16,4 +17,4 @@ export const requests = {
 	delete: <T>(url: string): Promise<T> => axios.delete<T>(url).then(responseBody)
 };
 
-export default { Posts, Account, Comments, Profiles };
+export default { Posts, Account, Comments, Profiles, Followers, Leaders };

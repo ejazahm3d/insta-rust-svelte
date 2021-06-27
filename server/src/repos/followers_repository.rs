@@ -88,4 +88,26 @@ impl FollowersRepository<'_> {
 
         return leaders;
     }
+
+    pub async fn followers_count(&self, leader_id: &Uuid) -> Result<Option<i64>, Error> {
+        let count = sqlx::query!(
+            r#"SELECT COUNT(id) as COUNT FROM followers where leader_id = $1"#,
+            leader_id
+        )
+        .fetch_one(self.connection)
+        .await?;
+
+        return Ok(count.count);
+    }
+
+    pub async fn leaders_count(&self, follower_id: &Uuid) -> Result<Option<i64>, Error> {
+        let count = sqlx::query!(
+            r#"SELECT COUNT(id) as COUNT FROM followers where follower_id = $1"#,
+            follower_id
+        )
+        .fetch_one(self.connection)
+        .await?;
+
+        return Ok(count.count);
+    }
 }
