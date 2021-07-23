@@ -1,5 +1,5 @@
 <script lang="ts">
-	import agent from '$lib/api/agent';
+	import agent from '$lib/api';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { accountsStore } from '$lib/stores/index';

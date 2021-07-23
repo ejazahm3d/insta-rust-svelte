@@ -1,5 +1,5 @@
 import type { LoginRequest, SignUpRequest } from '$lib/api/account';
-import agent from '$lib/api/agent';
+import agent from '$lib/api';
 import { writable } from 'svelte/store';
 
 function createAccountStore() {

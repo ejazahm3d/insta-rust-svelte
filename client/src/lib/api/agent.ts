@@ -1,9 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import { Account } from './account';
-import { Comments } from './comment';
-import { Followers, Leaders } from './followers-leaders';
-import { Posts } from './post';
-import { Profiles } from './profile';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 axios.defaults.withCredentials = true;
@@ -16,5 +11,3 @@ export const requests = {
 	put: <T, R>(url: string, body: T): Promise<R> => axios.put<R>(url, body).then(responseBody),
 	delete: <T>(url: string): Promise<T> => axios.delete<T>(url).then(responseBody)
 };
-
-export default { Posts, Account, Comments, Profiles, Followers, Leaders };

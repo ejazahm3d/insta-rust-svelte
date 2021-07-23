@@ -1,4 +1,4 @@
-import agent from '$lib/api/agent';
+import agent from '$lib/api';
 import type { CreateComment, Comment } from '$lib/api/comment';
 import type { Post } from '$lib/api/post';
 import { writable } from 'svelte/store';

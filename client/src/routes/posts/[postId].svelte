@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import agent from '$lib/api/agent';
+	import agent from '$lib/api';
 	import CommentsList from '$lib/components/CommentList/CommentsList.svelte';
 	import CreateComment from '$lib/components/CreateComment/CreateComment.svelte';
 	import LikesList from '$lib/components/LikesList/LikesList.svelte';

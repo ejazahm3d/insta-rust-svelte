@@ -1,4 +1,4 @@
-import agent from '$lib/api/agent';
+import agent from '$lib/api';
 import type { Profile } from '$lib/api/profile';
 import { writable } from 'svelte/store';
 

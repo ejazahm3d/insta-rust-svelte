@@ -1,5 +1,5 @@
 <script lang="ts">
-	import agent from '$lib/api/agent';
+	import agent from '$lib/api';
 
 	export let postId: string;
 
