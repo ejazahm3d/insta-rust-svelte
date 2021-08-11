@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { accountsStore, commentsStore } from '$lib/stores';
 	import { onMount } from 'svelte';
+	import CreateComment from '../CreateComment/CreateComment.svelte';
 
 	export let postId: string;
 
@@ -14,9 +15,14 @@
 </script>
 
 <div class="w-full bg-base-300">
+	{#if isLoggedIn}
+		<div class="mx-4">
+			<CreateComment {postId} />
+		</div>
+	{/if}
 	{#each comments as comment}
 		<div class="card mx-4 md:mx-10 my-5 bg-base-100 rounded-box">
-			<div class="card-body">
+			<div class="p-5">
 				<div class="card-title">
 					{comment.contents}
 				</div>

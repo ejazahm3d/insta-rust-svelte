@@ -27,7 +27,7 @@
 		<label for="contents" class="label label-text"> Comment </label>
 		<textarea
 			name="contents"
-			class="textarea textarea-primary h-30 w-full"
+			class="textarea textarea-primary w-full"
 			bind:value={comment.contents}
 			required
 		/>

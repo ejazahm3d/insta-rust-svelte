@@ -29,9 +29,6 @@
 				</div>
 
 				<LikesList postId={post.id} />
-				{#if isLoggedIn}
-					<CreateComment postId={post.id} />
-				{/if}
 			</div>
 		</div>
 		<CommentsList postId={post.id} />
