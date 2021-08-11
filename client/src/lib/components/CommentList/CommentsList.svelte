@@ -21,7 +21,7 @@
 		</div>
 	{/if}
 	{#each comments as comment}
-		<div class="card mx-4 md:mx-10 my-5 bg-base-100 rounded-box">
+		<div class="card mx-4 my-5 bg-base-100 rounded-box">
 			<div class="p-5">
 				<div class="card-title">
 					{comment.contents}
@@ -32,7 +32,7 @@
 				<div class="flex justify-end">
 					{#if isLoggedIn}
 						<button
-							class="btn btn-primary mr-2"
+							class="btn btn-primary btn-sm mr-2"
 							on:click={async () => await commentsStore.likeComment(postId, comment.id)}
 						>
 							Like
@@ -41,7 +41,7 @@
 
 					{#if currentUser?.id === comment.userId}
 						<button
-							class="btn btn-secondary"
+							class="btn btn-secondary btn-sm"
 							on:click={async () => await commentsStore.deleteComment(postId, comment.id)}
 						>
 							Delete

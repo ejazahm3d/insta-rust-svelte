@@ -34,17 +34,19 @@
 						<p>Comments: {post.comments}</p>
 
 						<div class="justify-end card-actions">
-							<a class="btn btn-primary mb-3" href={`/posts/${post.id}`}>Details</a>
+							<a class="btn btn-primary btn-sm mb-3" href={`/posts/${post.id}`}>Details</a>
 
 							{#if isLoggedIn}
-								<button class="btn btn-primary mb-3" on:click={() => postsStore.likePost(post.id)}
-									>Like</button
+								<button
+									class="btn btn-primary btn-sm mb-3"
+									on:click={() => postsStore.likePost(post.id)}>Like</button
 								>
 							{/if}
 
 							{#if $accountsStore.user?.id === post.userId}
-								<button class="btn btn-error mb-3" on:click={() => postsStore.deletePost(post.id)}
-									>Delete</button
+								<button
+									class="btn btn-secondary btn-sm mb-3"
+									on:click={() => postsStore.deletePost(post.id)}>Delete</button
 								>
 							{/if}
 						</div>

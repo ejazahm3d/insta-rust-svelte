@@ -22,7 +22,7 @@
 	}
 </script>
 
-<form on:submit|preventDefault={onSubmit}>
+<form class="flex flex-col " on:submit|preventDefault={onSubmit}>
 	<div class="mb-2 form-control">
 		<label for="contents" class="label label-text"> Comment </label>
 		<textarea
@@ -32,5 +32,5 @@
 			required
 		/>
 	</div>
-	<button type="submit" class="btn btn-primary mt-2 float-end">Submit</button>
+	<button type="submit" class="btn btn-primary mt-2 self-end">Submit</button>
 </form>
