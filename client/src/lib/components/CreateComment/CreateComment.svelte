@@ -23,13 +23,11 @@
 </script>
 
 <form on:submit|preventDefault={onSubmit}>
-	<div class="mb-2">
-		<label for="contents" class="form-label"> Content </label>
+	<div class="mb-2 form-control">
+		<label for="contents" class="label label-text"> Comment </label>
 		<textarea
 			name="contents"
-			class="form-control"
-			rows="5"
-			cols="60"
+			class="textarea textarea-primary h-30 w-full"
 			bind:value={comment.contents}
 			required
 		/>

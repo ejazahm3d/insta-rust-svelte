@@ -2,6 +2,6 @@ application_port: 5000
 database:
   host: "localhost"
   port: 5432
-  username: "postgres"
-  password: "postgres"
+  username: "test"
+  password: "test"
   database_name: "instagram_rs"

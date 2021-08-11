@@ -25,19 +25,25 @@
 	}
 </script>
 
-<div class="container">
-	<h1 class="text-center mt-5">Login page</h1>
+<div class="p-10 card bg-base-200 max-w-md mx-auto mt-10 md:mt-20">
+	<h1 class="text-center mt-5 text-3xl mb-3 font-semibold">Login page</h1>
 
 	<form on:submit|preventDefault={login}>
-		<div class="mb-3">
-			<label class="form-label" for="email">Email</label>
-			<input class="form-control" name="email" type="email" bind:value={$user.email} required />
+		<div class="mb-3 form-control">
+			<label class="label" for="email"> Email </label>
+			<input
+				class="input input-bordered"
+				name="email"
+				type="email"
+				bind:value={$user.email}
+				required
+			/>
 		</div>
 
-		<div class="mb-3">
-			<label class="form-label" for="password">Password</label>
+		<div class="mb-3 form-control">
+			<label class="label label-text" for="password">Password</label>
 			<input
-				class="form-control"
+				class="input input-bordered"
 				name="password"
 				type="password"
 				bind:value={$user.password}
@@ -45,10 +51,11 @@
 			/>
 		</div>
 
-		<button type="submit" class={`btn btn-primary `} disabled={loading}>
-			{#if loading}
-				<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
-			{/if}
+		<button
+			type="submit"
+			class={`btn btn-primary w-full mt-3 ${loading ? 'loading' : ''}`}
+			disabled={loading}
+		>
 			Submit</button
 		>
 	</form>

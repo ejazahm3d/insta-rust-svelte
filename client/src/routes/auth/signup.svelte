@@ -25,29 +25,35 @@
 	}
 </script>
 
-<div class="container">
-	<h1 class="text-center mt-5">Signup page</h1>
+<div class="p-10 card bg-base-200 max-w-md mx-auto mt-10 md:mt-20">
+	<h1 class="text-center mt-5 text-3xl font-semibold mb-3 ">Signup page</h1>
 
 	<form on:submit|preventDefault={signup}>
-		<div class="mb-3">
-			<label class="form-label" for="email">Email</label>
-			<input class="form-control" name="email" type="email" bind:value={$user.email} required />
+		<div class="mb-3 form-control">
+			<label class="label label-text" for="email">Email</label>
+			<input
+				class="input input-bordered"
+				name="email"
+				type="email"
+				bind:value={$user.email}
+				required
+			/>
 		</div>
 
-		<div class="mb-3">
-			<label class="form-label" for="username">Username</label>
+		<div class="mb-3 form-control">
+			<label class="label label-text" for="username">Username</label>
 			<input
-				class="form-control"
+				class="input input-bordered"
 				name="username"
 				type="text"
 				bind:value={$user.username}
 				required
 			/>
 		</div>
-		<div class="mb-3">
-			<label class="form-label" for="password">Password</label>
+		<div class="mb-3 form-control">
+			<label class="label label-text" for="password">Password</label>
 			<input
-				class="form-control"
+				class="input input-bordered"
 				name="password"
 				type="password"
 				bind:value={$user.password}
@@ -55,10 +61,11 @@
 			/>
 		</div>
 
-		<button class="btn btn-primary" type="submit" disabled={loading}>
-			{#if loading}
-				<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
-			{/if}
+		<button
+			class={`btn btn-primary w-full mt-3 ${loading && 'loading'}`}
+			type="submit"
+			disabled={loading}
+		>
 			Submit</button
 		>
 	</form>

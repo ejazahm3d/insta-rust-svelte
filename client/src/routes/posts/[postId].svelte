@@ -15,19 +15,25 @@
 	$: isLoggedIn = $accountsStore.user;
 </script>
 
-<div class="container d-flex flex-column">
+<div class="flex flex-col md:flex-row ">
 	{#await fetchPost()}
 		<div>Fetching single post</div>
 	{:then post}
-		<div>
-			{post.caption}
-		</div>
-		<img src={`http://localhost:5000${post.url}`} alt={post.url} />
-		<LikesList postId={post.id} />
+		<div class="card p-10 bg-base-200 mt-10 md:mt-0">
+			<figure>
+				<img class="rounded-xl" src={`http://localhost:5000${post.url}`} alt={post.url} />
+			</figure>
+			<div class="card-body">
+				<div class="card-title mt-5">
+					{post.caption}
+				</div>
 
-		{#if isLoggedIn}
-			<CreateComment postId={post.id} />
-		{/if}
+				<LikesList postId={post.id} />
+				{#if isLoggedIn}
+					<CreateComment postId={post.id} />
+				{/if}
+			</div>
+		</div>
 		<CommentsList postId={post.id} />
 	{:catch}
 		<div>Error loading post</div>

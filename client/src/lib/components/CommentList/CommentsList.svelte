@@ -13,34 +13,35 @@
 	$: isLoggedIn = !!$accountsStore.user;
 </script>
 
-<h2 class="mb-5">Comment List</h2>
-
-<div>
+<div class="w-full bg-base-300">
 	{#each comments as comment}
-		<div class="card mt-3">
+		<div class="card mx-4 md:mx-10 my-5 bg-base-100 rounded-box">
 			<div class="card-body">
-				{comment.contents}
-			</div>
+				<div class="card-title">
+					{comment.contents}
+				</div>
 
-			<div>likes: {comment.likes}</div>
-			<div class="d-flex">
-				{#if isLoggedIn}
-					<button
-						class="btn btn-primary"
-						on:click={async () => await commentsStore.likeComment(postId, comment.id)}
-					>
-						Like
-					</button>
-				{/if}
+				<div class="my-3">likes: {comment.likes}</div>
 
-				{#if currentUser?.id === comment.userId}
-					<button
-						class="btn btn-danger"
-						on:click={async () => await commentsStore.deleteComment(postId, comment.id)}
-					>
-						Delete
-					</button>
-				{/if}
+				<div class="flex justify-end">
+					{#if isLoggedIn}
+						<button
+							class="btn btn-primary mr-2"
+							on:click={async () => await commentsStore.likeComment(postId, comment.id)}
+						>
+							Like
+						</button>
+					{/if}
+
+					{#if currentUser?.id === comment.userId}
+						<button
+							class="btn btn-secondary"
+							on:click={async () => await commentsStore.deleteComment(postId, comment.id)}
+						>
+							Delete
+						</button>
+					{/if}
+				</div>
 			</div>
 		</div>
 	{/each}

@@ -42,19 +42,12 @@
 	}
 </script>
 
-<h2>Create Post</h2>
+<h2 class="text-3xl my-3">Create Post</h2>
 
-<form on:submit|preventDefault={onSubmit}>
-	<div class="mb-2">
-		<label for="caption" class="form-label"> Caption </label>
-		<textarea
-			name="caption"
-			class="form-control"
-			rows="5"
-			cols="100"
-			bind:value={$store.caption}
-			required
-		/>
+<form class="w-full" on:submit|preventDefault={onSubmit}>
+	<div class="mb-3 form-control">
+		<label for="caption" class="label label-text"> Caption </label>
+		<textarea name="caption" class="textarea h-32 w-full" bind:value={$store.caption} required />
 	</div>
 
 	<div>
@@ -63,6 +56,7 @@
 		{/if}
 
 		<input
+			class="my-3 text-center"
 			type="file"
 			name="img"
 			id="img"
@@ -73,7 +67,7 @@
 		/>
 	</div>
 
-	<button type="submit" class="btn btn-primary mt-2 float-end">Submit</button>
+	<button type="submit" class="btn btn-primary mt-3 w-full">Submit</button>
 </form>
 
 <style>

@@ -1,18 +1,20 @@
 <script>
-	import Header from '$lib/components/Header/Header.svelte';
-	import { accountsStore } from '$lib/stores/index';
-	import { onMount } from 'svelte';
-	import '../styles/global.css';
+	import "../app.postcss";
+    import Header from '$lib/components/Header/Header.svelte';
+    import { accountsStore } from '$lib/stores/index';
+    import { onMount } from 'svelte';
 
-	onMount(async () => {
+    onMount(async () => {
 		accountsStore.fetchCurrentUser();
 	});
 
-	$: isLoggedIn = !!$accountsStore?.user;
+    $: isLoggedIn = !!$accountsStore?.user;
 </script>
 
-<Header {isLoggedIn} userId={$accountsStore.user?.id} />
+<Header {isLoggedIn} userId="{$accountsStore.user?.id}">
 
 <main>
-	<slot />
-</main>
+	<slot>
+</slot></main>
+</Header>
+<slot></slot>

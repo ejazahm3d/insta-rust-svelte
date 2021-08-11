@@ -2,8 +2,8 @@
 set -x
 set -eo pipefail
 
-DB_USER=${POSTGRES_USER:=postgres}
-DB_PASSWORD="${POSTGRES_PASSWORD:=postgres}"
+DB_USER=${POSTGRES_USER:=test}
+DB_PASSWORD="${POSTGRES_PASSWORD:=test}"
 DB_NAME="${POSTGRES_DB:=instagram_rs}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 
