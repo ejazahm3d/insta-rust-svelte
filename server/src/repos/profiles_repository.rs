@@ -11,7 +11,7 @@ impl ProfilesRepository<'_> {
         let user = sqlx::query_as!(
             UserProfileResponse,
             r#"
-            SELECT id, email, username, created_at, updated_at, avatar 
+            SELECT id, email, username, created_at, updated_at, avatar, bio
             FROM users WHERE id = $1;
             "#,
             user_id

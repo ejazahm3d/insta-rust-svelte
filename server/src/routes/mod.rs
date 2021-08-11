@@ -19,7 +19,7 @@ use self::{
         create_post, delete_post, like_or_dislike_post, likes_by_post, list_all_posts,
         post_details, upload_post_photo,
     },
-    profiles::profile_details,
+    profiles::{profile_details, profile_posts},
 };
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
@@ -36,7 +36,11 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                     .route("/logout", post().to(logout))
                     .route("/current", get().to(current_user)),
             )
-            .service(web::scope("/profiles").route("/{user_id}", get().to(profile_details)))
+            .service(
+                web::scope("/profiles")
+                    .route("/{user_id}", get().to(profile_details))
+                    .route("/{user_id}/posts", get().to(profile_posts)),
+            )
             .service(
                 web::scope("/posts")
                     .route("", get().to(list_all_posts))

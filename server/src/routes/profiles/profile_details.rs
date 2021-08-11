@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct UserProfileResponse {
     pub id: Uuid,
     pub email: String,
@@ -12,6 +12,7 @@ pub struct UserProfileResponse {
     pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
     pub avatar: Option<String>,
+    pub bio: Option<String>,
 }
 
 pub async fn profile_details(
@@ -23,6 +24,8 @@ pub async fn profile_details(
     let user_id = &path;
 
     let profile = profiles_repository.fine_one(user_id).await?;
+
+    println!("{:?}", profile);
 
     Ok(HttpResponse::Ok().json(profile))
 }

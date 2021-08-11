@@ -44,6 +44,43 @@ impl PostsRepository<'_> {
         posts
     }
 
+    pub async fn find_many_by_user_id(
+        &self,
+        user_id: &Uuid,
+    ) -> Result<Vec<ListPostsResponse>, Error> {
+        let posts = sqlx::query_as!(
+            ListPostsResponse,
+            r#"
+            SELECT p.id,
+            caption,
+            url,
+            lat,
+            lng,
+            p.updated_at,
+            p.created_at,
+            username,
+            p.user_id,
+            COUNT(distinct l.id) as likes,
+            COUNT(distinct c.id) as comments
+     
+     FROM posts p
+              JOIN users u
+                   ON p.user_id = u.id
+              LEFT JOIN likes l
+                        ON p.id = l.post_id
+              LEFT JOIN comments c
+                        ON p.id = c.post_id
+     WHERE u.id = $1
+     GROUP BY p.id, u.id;
+ "#,
+            user_id
+        )
+        .fetch_all(self.connection)
+        .await;
+
+        posts
+    }
+
     pub async fn find_one(&self, id: &Uuid) -> Result<Option<Post>, Error> {
         let post = sqlx::query_as!(Post, "SELECT * FROM posts WHERE id = $1;", id)
             .fetch_optional(self.connection)
