@@ -25,7 +25,5 @@ pub async fn profile_details(
 
     let profile = profiles_repository.fine_one(user_id).await?;
 
-    println!("{:?}", profile);
-
     Ok(HttpResponse::Ok().json(profile))
 }

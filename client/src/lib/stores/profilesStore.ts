@@ -9,11 +9,13 @@ function createAccountStore() {
 		posts: Post[];
 		followers: number;
 		following: number;
+		isFollowing: boolean;
 	}>({
 		profile: null,
 		posts: [],
 		followers: 0,
-		following: 0
+		following: 0,
+		isFollowing: false
 	});
 
 	return {
@@ -28,13 +30,26 @@ function createAccountStore() {
 			update((prevState) => ({ ...prevState, posts: data }));
 		},
 		followers: async (userId: string) => {
-			const data = await agent.Followers.followersByLeaderId(userId);
-			update((prevState) => ({ ...prevState, followers: data.length }));
+			const data = await agent.Followers.followersCount(userId);
+			update((prevState) => ({ ...prevState, followers: data }));
 		},
-
 		following: async (userId: string) => {
-			const data = await agent.Leaders.leadersByFollowerId(userId);
-			update((prevState) => ({ ...prevState, following: data.length }));
+			const data = await agent.Leaders.leadersCount(userId);
+			update((prevState) => ({ ...prevState, following: data }));
+		},
+		isFollowing: async (userId: string) => {
+			const isFollowing = await agent.Leaders.isFollowing(userId);
+			update((prevState) => ({ ...prevState, isFollowing }));
+		},
+		followOrUnfollow: async (userId: string) => {
+			await agent.Leaders.followOrUnfollow(userId);
+
+			const following = await agent.Leaders.leadersCount(userId);
+			const followers = await agent.Followers.followersCount(userId);
+			const posts = await agent.Profiles.posts(userId);
+			const isFollowing = await agent.Leaders.isFollowing(userId);
+
+			update((prevState) => ({ ...prevState, followers, following, posts, isFollowing }));
 		}
 	};
 }

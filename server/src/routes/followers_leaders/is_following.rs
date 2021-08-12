@@ -5,7 +5,7 @@ use crate::{extractors::AuthorizationService, io::error::Error};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-pub async fn follow_or_unfollow(
+pub async fn is_following(
     auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
@@ -18,19 +18,7 @@ pub async fn follow_or_unfollow(
         .await?;
 
     match follower {
-        Some(_) => {
-            let follower = followers_repository
-                .unfollow(leader_id, follower_id)
-                .await?;
-            Ok(HttpResponse::Ok().json(follower))
-        }
-        None => {
-            if follower_id == leader_id {
-                return Ok(HttpResponse::BadRequest().body("cant follow your own self"));
-            }
-
-            let follower = followers_repository.follow(leader_id, follower_id).await?;
-            Ok(HttpResponse::Ok().json(follower))
-        }
+        Some(_) => Ok(HttpResponse::Ok().json(true)),
+        None => Ok(HttpResponse::Ok().json(false)),
     }
 }

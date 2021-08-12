@@ -71,7 +71,6 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
             )
             .service(
                 web::scope("/followers")
-                    .route("", post().to(followers_leaders::follow_or_unfollow))
                     .route("/{leader_id}", get().to(followers_leaders::followers))
                     .route(
                         "/{leader_id}/count",
@@ -82,8 +81,16 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                 web::scope("/leaders")
                     .route("/{follower_id}", get().to(followers_leaders::leaders))
                     .route(
+                        "/{leader_id}",
+                        post().to(followers_leaders::follow_or_unfollow),
+                    )
+                    .route(
                         "/{follower_id}/count",
                         get().to(followers_leaders::leaders_count),
+                    )
+                    .route(
+                        "/{leader_id}/isFollowing",
+                        get().to(followers_leaders::is_following),
                     ),
             ),
     );

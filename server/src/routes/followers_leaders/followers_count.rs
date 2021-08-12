@@ -10,9 +10,9 @@ pub async fn followers_count(
     path: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
     let followers_repository = FollowersRepository { connection: &conn };
-    let leader_count = &path;
+    let leader_id = &path;
 
-    let people_who_follow_you_count = followers_repository.leaders_count(leader_count).await?;
+    let followers_count = followers_repository.followers_count(leader_id).await?;
 
-    Ok(HttpResponse::Ok().json(people_who_follow_you_count))
+    Ok(HttpResponse::Ok().json(followers_count))
 }

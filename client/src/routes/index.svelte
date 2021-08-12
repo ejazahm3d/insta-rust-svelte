@@ -21,15 +21,30 @@
 	{:then _}
 		<div class="flex flex-col items-center">
 			{#each posts as post}
-				<div class="card m-5 bordered bg-base-200">
-					<figure class="px-10 pt-10">
+				<div class="card m-5  bordered bg-base-200">
+					<div class="flex items-center justify-start mx-10 my-5 ">
+						<a href="/profiles/{post.userId}" class="avatar">
+							<div
+								class="mr-2 rounded-full w-12 h-12 ring ring-primary ring-offset-base-100 ring-offset-2"
+							>
+								<img
+									src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
+									alt="avatar"
+								/>
+							</div>
+						</a>
+						<span>
+							{post.username}
+						</span>
+					</div>
+
+					<figure class="px-10 ">
 						<img class="rounded-xl" src={`http://localhost:5000${post.url}`} alt={post.caption} />
 					</figure>
 					<div class="card-body">
 						<p class="card-title">
 							{post.caption}
 						</p>
-						<p>Created by: {post.username}</p>
 						<p>Likes: {post.likes}</p>
 						<p>Comments: {post.comments}</p>
 
