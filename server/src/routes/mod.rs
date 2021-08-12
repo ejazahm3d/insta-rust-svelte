@@ -16,7 +16,7 @@ use self::{
         update_comment,
     },
     posts::{
-        create_post, delete_post, like_or_dislike_post, likes_by_post, list_all_posts,
+        create_post, delete_post, has_liked, like_or_dislike_post, likes_by_post, list_all_posts,
         post_details, upload_post_photo,
     },
     profiles::{profile_details, profile_posts},
@@ -48,6 +48,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
                     .route("/upload", post().to(upload_post_photo))
                     .route("/{post_id}", get().to(post_details))
                     .route("/{post_id}", delete().to(delete_post))
+                    .route("/{post_id}/hasLiked", get().to(has_liked))
                     .route("/{post_id}/likes", get().to(likes_by_post))
                     .route("/{post_id}/likes", post().to(like_or_dislike_post))
                     .route("/{post_id}/comments", get().to(post_comments))

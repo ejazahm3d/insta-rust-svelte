@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CreatePost from '$lib/components/CreatePost/CreatePost.svelte';
+	import agent from '$lib/api/index';
 
 	import { postsStore, accountsStore } from '$lib/stores';
 
@@ -60,11 +61,21 @@
 								{post.caption}
 							</div>
 						</div>
-						<div class="self-end">
+						<div class="self-end h-8">
 							{#if isLoggedIn}
-								<button class="btn btn-primary btn-sm" on:click={() => postsStore.likePost(post.id)}
-									>Like</button
-								>
+								{#await agent.Posts.hasLiked(post.id) then hasLiked}
+									{#if hasLiked}
+										<button
+											class="btn btn-primary btn-sm"
+											on:click={() => postsStore.likePost(post.id)}>Dislike</button
+										>
+									{:else}
+										<button
+											class="btn btn-primary btn-sm"
+											on:click={() => postsStore.likePost(post.id)}>Like</button
+										>
+									{/if}
+								{/await}
 							{/if}
 
 							{#if $accountsStore.user?.id === post.userId}
