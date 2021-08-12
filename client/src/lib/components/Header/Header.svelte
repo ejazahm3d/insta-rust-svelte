@@ -9,42 +9,62 @@
 	};
 </script>
 
-<nav class="navbar mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
-	<div class="flex-none px-2 mx-2">
-		<a href="/" class="text-lg font-bold"> Insta </a>
-	</div>
-	<div class="flex-1 px-2 mx-2">
-		<ul class="items-stretch ">
-			<li class="btn btn-ghost btn-sm rounded-btn">
-				<a href="/">Home </a>
-			</li>
+<nav class="border-b px-4 py-2 bg-white">
+	<div class="flex flex-wrap items-center justify-between md:justify-around">
+		<!-- logo -->
+		<a href="/">
+			<img
+				class="h-10"
+				src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/150px-Instagram_logo.svg.png"
+				alt="instagram"
+			/>
+		</a>
 
+		<!-- search-->
+		<div class="relative hidden sm:block text-gray-500">
+			<input
+				class="search-bar max-w-xs border rounded bg-gray-200 px-4
+			  text-center outline-none focus:border-gray-400"
+				type="search"
+				placeholder="Search"
+			/>
+			<i class="fa fa-search absolute top-0 left-0 ml-12 mt-1" />
+		</div>
+
+		<div class="space-x-4">
 			{#if !isLoggedIn}
-				<li class="btn btn-ghost btn-sm rounded-btn">
-					<a href="/auth/signup">Sign Up</a>
-				</li>
-				<li class="btn btn-ghost btn-sm rounded-btn">
-					<a href="/auth/login">Login</a>
-				</li>
+				<a href="/auth/login" class="btn btn-primary btn-sm">Log In</a>
+				<a href="/auth/signup" class="btn btn-primary btn-sm btn-outline">Sign Up</a>
 			{/if}
-		</ul>
-	</div>
-	{#if isLoggedIn}
-		<li class="nav-item">
-			<button class="btn btn-error btn-sm rounded-btn " on:click={logout}>Logout</button>
-		</li>
-		<div class="flex-none">
-			<a href={`/profiles/${userId}`}>
-				<div class="avatar">
-					<div class="rounded-full w-10 h-10 m-1">
-						<img
-							src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
-							alt="avatar"
-						/>
+			{#if isLoggedIn}
+				<div class="flex items-center">
+					<div class="dropdown dropdown-end">
+						<div tabindex="0" class="dropdown dropdown-end">
+							<div class="avatar">
+								<div class="rounded-full w-10 h-10 m-1">
+									<img
+										src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
+										alt="avatar"
+									/>
+								</div>
+							</div>
+							<!-- <a href={`/profiles/${userId}`}>
+						</a> -->
+							<ul
+								tabindex="0"
+								class="p-2 shadow menu dropdown-content bg-neutral text-neutral-content rounded-box w-52"
+							>
+								<li>
+									<a href="/profiles/{userId}">Profile</a>
+								</li>
+								<li>
+									<button class="btn btn-secondary btn-sm " on:click={logout}>Logout</button>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
-			</a>
+			{/if}
 		</div>
-		<li class="nav-item" />
-	{/if}
+	</div>
 </nav>
