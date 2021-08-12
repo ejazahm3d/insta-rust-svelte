@@ -8,6 +8,7 @@ export interface Profile {
 	created_at: string;
 	updated_at: string;
 	avatar: null | string;
+	bio: null | string;
 }
 
 export const Profiles = {

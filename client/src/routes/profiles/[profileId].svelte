@@ -5,19 +5,17 @@
 
 	import { onMount } from 'svelte';
 
+	let userId = $page.params.profileId;
 	onMount(async () => {
-		let userId = $page.params.profileId;
 		await profilesStore.details(userId);
 		await profilesStore.posts(userId);
 	});
 
 	$: profile = $profilesStore.profile;
 	$: posts = $profilesStore.posts;
+	$: followers = $profilesStore.followers;
+	$: following = $profilesStore.following;
 </script>
-
-{#if profile?.id}
-	<h1>this is profile {profile?.id}</h1>
-{/if}
 
 <div class="bg-gray-100 bg-opacity-25">
 	<div class="lg:w-8/12 lg:mx-auto mb-8">
@@ -50,44 +48,37 @@
 					</span>
 
 					<!-- follow button -->
-					<a
-						href="#"
-						class="bg-blue-500 px-2 py-1 
-						  text-white font-semibold text-sm rounded block text-center 
-						  sm:inline-block block">Follow</a
-					>
+					{#if userId !== profile.id}
+						<button class="btn btn-primary btn-sm">Follow</button>
+					{/if}
 				</div>
 
 				<!-- post, following, followers list for medium screens -->
 				<ul class="hidden md:flex space-x-8 mb-4">
 					<li>
-						<span class="font-semibold">136</span>
+						<span class="font-semibold">{posts.length}</span>
 						posts
 					</li>
 
 					<li>
-						<span class="font-semibold">40.5k</span>
+						<span class="font-semibold">{followers}</span>
 						followers
 					</li>
 					<li>
-						<span class="font-semibold">302</span>
+						<span class="font-semibold">{following}</span>
 						following
 					</li>
 				</ul>
 
 				<!-- user meta form medium screens -->
 				<div class="hidden md:block">
-					<h1 class="font-semibold">Mr Travlerrr...</h1>
-					<span>Travel, Nature and Music</span>
-					<p>Lorem ipsum dolor sit amet consectetur</p>
+					<p>{profile.bio ?? ''}</p>
 				</div>
 			</div>
 
 			<!-- user meta form small screens -->
 			<div class="md:hidden text-sm my-2">
-				<h1 class="font-semibold">Mr Travlerrr...</h1>
-				<span>Travel, Nature and Music</span>
-				<p>Lorem ipsum dolor sit amet consectetur</p>
+				<p>{profile.bio ?? ''}</p>
 			</div>
 		</header>
 
@@ -99,16 +90,16 @@
 			text-center p-2 text-gray-600 leading-snug text-sm"
 			>
 				<li>
-					<span class="font-semibold text-gray-800 block">136</span>
+					<span class="font-semibold text-gray-800 block">{posts.length}</span>
 					posts
 				</li>
 
 				<li>
-					<span class="font-semibold text-gray-800 block">40.5k</span>
+					<span class="font-semibold text-gray-800 block">{followers}</span>
 					followers
 				</li>
 				<li>
-					<span class="font-semibold text-gray-800 block">302</span>
+					<span class="font-semibold text-gray-800 block">{following}</span>
 					following
 				</li>
 			</ul>
@@ -121,27 +112,13 @@
 			>
 				<!-- posts tab is active -->
 				<li class="md:border-t md:border-gray-700 md:-mt-px md:text-gray-700">
-					<a class="inline-block p-3" href="#">
+					<a class="inline-block p-3" href="#post">
 						<i class="fas fa-th-large text-xl md:text-xs" />
 						<span class="hidden md:inline">post</span>
 					</a>
 				</li>
-				<li>
-					<a class="inline-block p-3" href="#">
-						<i class="far fa-square text-xl md:text-xs" />
-						<span class="hidden md:inline">igtv</span>
-					</a>
-				</li>
-				<li>
-					<a class="inline-block p-3" href="#">
-						<i
-							class="fas fa-user border border-gray-500
-				px-1 pt-1 rounded text-xl md:text-xs"
-						/>
-						<span class="hidden md:inline">tagged</span>
-					</a>
-				</li>
 			</ul>
+
 			{#if posts.length > 0}
 				<!-- flexbox grid -->
 				<div class="flex flex-wrap -mx-px md:-mx-3">
@@ -155,7 +132,7 @@
 									<img
 										class="w-full h-full absolute left-0 top-0 object-cover"
 										src={`http://localhost:5000${post.url}`}
-										alt="image"
+										alt="post"
 									/>
 
 									<i class="fas fa-square absolute right-0 top-0 m-1" />
