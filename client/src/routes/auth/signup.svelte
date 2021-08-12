@@ -26,7 +26,7 @@
 </script>
 
 <div class="p-10 card bg-base-200 max-w-md mx-auto mt-10 md:mt-20">
-	<h1 class="text-center mt-5 text-3xl font-semibold mb-3 ">Signup page</h1>
+	<h1 class="text-center mt-5 text-3xl font-semibold mb-3 ">Signup</h1>
 
 	<form on:submit|preventDefault={signup}>
 		<div class="mb-3 form-control">
