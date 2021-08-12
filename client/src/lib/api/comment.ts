@@ -21,6 +21,9 @@ export const Comments = {
 	listLikes: (postId: string, commentId: string): Promise<Comment[]> =>
 		requests.get(`/posts/${postId}/comments/${commentId}/likes`),
 
+	hasLiked: (postId: string, commentId: string): Promise<boolean> =>
+		requests.get(`/posts/${postId}/comments/${commentId}/hasLiked`),
+
 	create: (postId: string, comment: CreateComment): Promise<Comment> =>
 		requests.post(`/posts/${postId}/comments`, comment),
 

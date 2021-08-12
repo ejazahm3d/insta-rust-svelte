@@ -2,6 +2,7 @@
 	import { accountsStore, commentsStore } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import CreateComment from '../CreateComment/CreateComment.svelte';
+	import agent from '$lib/api/index';
 
 	export let postId: string;
 
@@ -31,12 +32,23 @@
 
 				<div class="flex justify-end">
 					{#if isLoggedIn}
-						<button
-							class="btn btn-primary btn-sm mr-2"
-							on:click={async () => await commentsStore.likeComment(postId, comment.id)}
-						>
-							Like
-						</button>
+						{#await agent.Comments.hasLiked(postId, comment.id) then hasLiked}
+							{#if hasLiked}
+								<button
+									class="btn btn-primary btn-sm mr-2"
+									on:click={async () => await commentsStore.likeComment(postId, comment.id)}
+								>
+									Dislike
+								</button>
+							{:else}
+								<button
+									class="btn btn-primary btn-sm mr-2"
+									on:click={async () => await commentsStore.likeComment(postId, comment.id)}
+								>
+									Like
+								</button>
+							{/if}
+						{/await}
 					{/if}
 
 					{#if currentUser?.id === comment.userId}
