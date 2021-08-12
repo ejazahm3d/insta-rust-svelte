@@ -88,9 +88,3 @@
 		<div>{error.response.data}</div>
 	{/await}
 </div>
-
-<style>
-	img {
-		max-width: 45rem;
-	}
-</style>
