@@ -40,20 +40,18 @@
 				<div class="flex items-center">
 					<div class="dropdown dropdown-end">
 						<div tabindex="0" class="dropdown dropdown-end">
-							<div class="avatar">
-								<div class="rounded-full w-10 h-10 m-1">
+							<div class="avatar cursor-pointer">
+								<div
+									class="rounded-full w-10 h-10 m-1 ring ring-primary ring-offset-base-100 ring-offset-2"
+								>
 									<img
 										src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
 										alt="avatar"
 									/>
 								</div>
 							</div>
-							<!-- <a href={`/profiles/${userId}`}>
-						</a> -->
-							<ul
-								tabindex="0"
-								class="p-2 shadow menu dropdown-content bg-neutral text-neutral-content rounded-box w-52"
-							>
+
+							<ul tabindex="0" class="p-2 shadow menu dropdown-content rounded-box w-52">
 								<li>
 									<a href="/profiles/{userId}">Profile</a>
 								</li>
