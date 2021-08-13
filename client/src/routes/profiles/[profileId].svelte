@@ -5,7 +5,14 @@
 
 	import { onMount } from 'svelte';
 
-	let userId = $page.params.profileId;
+	$: userId = $page.params.profileId;
+	$: profile = $profilesStore.profile;
+	$: posts = $profilesStore.posts;
+	$: followers = $profilesStore.followers;
+	$: following = $profilesStore.following;
+	$: isFollowing = $profilesStore.isFollowing;
+	$: currentUser = $accountsStore.user;
+
 	onMount(async () => {
 		await profilesStore.details(userId);
 		await profilesStore.posts(userId);
@@ -17,13 +24,6 @@
 	async function followOrUnfollow() {
 		await profilesStore.followOrUnfollow(userId);
 	}
-
-	$: profile = $profilesStore.profile;
-	$: posts = $profilesStore.posts;
-	$: followers = $profilesStore.followers;
-	$: following = $profilesStore.following;
-	$: isFollowing = $profilesStore.isFollowing;
-	$: currentUser = $accountsStore.user;
 </script>
 
 {#if profile}

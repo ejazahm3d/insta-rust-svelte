@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import CreateComment from '../CreateComment/CreateComment.svelte';
 	import agent from '$lib/api/index';
+	import { formatDistance } from 'date-fns';
 
 	export let postId: string;
 
@@ -15,21 +16,32 @@
 	$: isLoggedIn = !!$accountsStore.user;
 </script>
 
-<div class="w-full bg-base-300">
+<div class="w-full">
 	{#if isLoggedIn}
 		<div class="mx-4">
 			<CreateComment {postId} />
 		</div>
 	{/if}
 	{#each comments as comment}
-		<div class="card mx-4 my-5 bg-base-100 rounded-box">
-			<div class="p-5">
-				<div class="card-title">
-					{comment.contents}
+		<div class="flex mt-5 mx-4">
+			<div class="avatar mx-2 mt-2">
+				<div class="rounded-full w-10 h-10 ring ring-primary ring-offset-base-100 ring-offset-2">
+					<img
+						src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
+						alt=""
+					/>
 				</div>
+			</div>
+			<div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed">
+				<strong>{comment.username}</strong>
+				<span class="text-xs text-gray-400"
+					>{formatDistance(new Date(comment.createdAt), new Date(), { addSuffix: true })}</span
+				>
+				<p class="text-sm">
+					{comment.contents}
+				</p>
 
-				<div class="my-3">likes: {comment.likes}</div>
-
+				<div class="text-sm text-gray-500 font-semibold">{comment.likes} likes</div>
 				<div class="flex justify-end">
 					{#if isLoggedIn}
 						{#await agent.Comments.hasLiked(postId, comment.id) then hasLiked}

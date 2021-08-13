@@ -67,12 +67,12 @@
 									{#if hasLiked}
 										<button
 											class="btn btn-primary btn-sm"
-											on:click={() => postsStore.likePost(post.id)}>Dislike</button
+											on:click={() => postsStore.likePostForList(post.id)}>Dislike</button
 										>
 									{:else}
 										<button
 											class="btn btn-primary btn-sm"
-											on:click={() => postsStore.likePost(post.id)}>Like</button
+											on:click={() => postsStore.likePostForList(post.id)}>Like</button
 										>
 									{/if}
 								{/await}

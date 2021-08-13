@@ -4,7 +4,7 @@ use uuid::Uuid;
 use crate::routes::posts::LikesByPostResponse;
 use crate::{
     models::{Like, Post},
-    routes::posts::{CreatePostRequest, ListPostsResponse},
+    routes::posts::{CreatePostRequest, ListPostsResponse, PostDetailsResponse},
 };
 
 pub struct PostsRepository<'a> {
@@ -81,10 +81,36 @@ impl PostsRepository<'_> {
         posts
     }
 
-    pub async fn find_one(&self, id: &Uuid) -> Result<Option<Post>, Error> {
-        let post = sqlx::query_as!(Post, "SELECT * FROM posts WHERE id = $1;", id)
-            .fetch_optional(self.connection)
-            .await;
+    pub async fn find_one(&self, id: &Uuid) -> Result<Option<PostDetailsResponse>, Error> {
+        let post = sqlx::query_as!(
+            PostDetailsResponse,
+            r#"   
+    SELECT p.id,
+            caption,
+            url,
+            lat,
+            lng,
+            p.updated_at,
+            p.created_at,
+            username,
+            p.user_id,
+            COUNT(distinct l.id) as likes,
+            COUNT(distinct c.id) as comments
+    
+    FROM posts p
+            JOIN users u
+                ON p.user_id = u.id
+            LEFT JOIN likes l
+                        ON p.id = l.post_id
+            LEFT JOIN comments c
+                        ON p.id = c.post_id
+    WHERE p.id = $1
+    GROUP BY p.id, u.id;
+ "#,
+            id
+        )
+        .fetch_optional(self.connection)
+        .await;
         post
     }
 
