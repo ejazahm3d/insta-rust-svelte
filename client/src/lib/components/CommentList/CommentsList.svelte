@@ -24,14 +24,14 @@
 	{/if}
 	{#each comments as comment}
 		<div class="flex mt-5 mx-4">
-			<div class="avatar mx-2 mt-2">
+			<a href="/profiles/{comment.userId}" class="avatar mx-2 mt-2">
 				<div class="rounded-full w-10 h-10 ring ring-primary ring-offset-base-100 ring-offset-2">
 					<img
 						src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
 						alt=""
 					/>
 				</div>
-			</div>
+			</a>
 			<div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed">
 				<strong>{comment.username}</strong>
 				<span class="text-xs text-gray-400"
