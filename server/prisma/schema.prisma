@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model sqlx_migrations {
+  version        BigInt   @id
+  description    String
+  installed_on   DateTime @default(now()) @db.Timestamptz(6)
+  success        Boolean
+  checksum       Bytes
+  execution_time BigInt
+
+  @@map("_sqlx_migrations")
+}
+
+model comments {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  contents   String
+  user_id    String    @db.Uuid
+  post_id    String    @db.Uuid
+  posts      posts     @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  likes      likes[]
+}
+
+model followers {
+  id                                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at                         DateTime? @default(now()) @db.Timestamptz(6)
+  leader_id                          String    @db.Uuid
+  follower_id                        String    @db.Uuid
+  users_followers_follower_idTousers users     @relation("followers_follower_idTousers", fields: [follower_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_followers_leader_idTousers   users     @relation("followers_leader_idTousers", fields: [leader_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([leader_id, follower_id])
+}
+
+model likes {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  user_id    String    @db.Uuid
+  post_id    String?   @db.Uuid
+  comment_id String?   @db.Uuid
+  comments   comments? @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  posts      posts?    @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, post_id, comment_id])
+}
+
+model posts {
+  id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime?  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime?  @default(now()) @db.Timestamptz(6)
+  url        String
+  caption    String?
+  lat        Float?     @db.Real
+  lng        Float?     @db.Real
+  user_id    String     @db.Uuid
+  users      users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  comments   comments[]
+  likes      likes[]
+}
+
+model users {
+  id                                     String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                                  String      @unique
+  created_at                             DateTime?   @default(now()) @db.Timestamptz(6)
+  updated_at                             DateTime?   @default(now()) @db.Timestamptz(6)
+  username                               String      @unique @db.VarChar(30)
+  bio                                    String?
+  avatar                                 String?
+  password                               String
+  status                                 String?
+  comments                               comments[]
+  followers_followers_follower_idTousers followers[] @relation("followers_follower_idTousers")
+  followers_followers_leader_idTousers   followers[] @relation("followers_leader_idTousers")
+  likes                                  likes[]
+  posts                                  posts[]
+}
