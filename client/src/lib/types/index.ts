@@ -39,3 +39,20 @@ export interface Comment {
 export interface CreateComment {
 	contents: string;
 }
+
+export interface Profile {
+	id: string;
+	email: string;
+	username: string;
+	created_at: string;
+	updated_at: string;
+	avatar: null | string;
+	bio: null | string;
+}
+
+export interface Follower {
+	id: string;
+	createdAt: Date;
+	leaderId: string;
+	followerId: string;
+}

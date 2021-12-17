@@ -36,7 +36,7 @@ export const postsApi = baseApi.injectEndpoints({
 				url: `/posts/${postId}/likes`,
 				method: 'POST'
 			}),
-			invalidatesTags: ['PostDetails', 'PostLikeList', 'PostList']
+			invalidatesTags: ['PostDetails', 'PostLikeList', 'PostList', 'PostsByProfile']
 		}),
 		postCreate: builder.mutation<Post, CreatePost>({
 			query: (body) => ({
@@ -44,14 +44,14 @@ export const postsApi = baseApi.injectEndpoints({
 				method: 'POST',
 				body
 			}),
-			invalidatesTags: ['PostList']
+			invalidatesTags: (res) => ['PostList', { type: 'PostsByProfile', id: res.userId }]
 		}),
 		postDelete: builder.mutation<Post, string>({
 			query: (postId) => ({
 				url: `/posts/${postId}`,
 				method: 'DELETE'
 			}),
-			invalidatesTags: ['PostList']
+			invalidatesTags: (res) => ['PostList', { type: 'PostsByProfile', id: res.userId }]
 		}),
 		uploadPhoto: builder.mutation<Post, Blob>({
 			query: (imageBlob) => {
@@ -64,8 +64,7 @@ export const postsApi = baseApi.injectEndpoints({
 					method: 'POST',
 					body: formData
 				};
-			},
-			invalidatesTags: ['PostList']
+			}
 		})
 	}),
 	overrideExisting: false
