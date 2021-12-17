@@ -4,17 +4,21 @@
 	import CommentsList from '$lib/components/CommentList/CommentsList.svelte';
 	import CreateComment from '$lib/components/CreateComment/CreateComment.svelte';
 	import LikesList from '$lib/components/LikesList/LikesList.svelte';
-	import { accountsStore, postsStore } from '$lib/stores';
+	import { store } from '$lib/store';
+	import { hasLikedPost, postDelete, postDetails, postLike } from '$lib/store/services/posts';
+	import { accountsStore } from '$lib/stores';
 	import { onMount } from 'svelte';
 
 	$: postId = $page.params.postId;
 
 	$: isLoggedIn = $accountsStore.user;
 
-	$: post = $postsStore.postDetails;
+	$: ({ data: post } = postDetails.select(postId)($store));
+	$: ({ data: hasLiked, isError, isLoading } = hasLikedPost.select(postId)($store));
 
 	onMount(() => {
-		postsStore.fetchPost(postId);
+		store.dispatch(postDetails.initiate(postId));
+		store.dispatch(hasLikedPost.initiate(postId));
 	});
 </script>
 
@@ -57,25 +61,23 @@
 				</div>
 				<div class="self-end h-8">
 					{#if isLoggedIn}
-						{#await agent.Posts.hasLiked(post.id) then hasLiked}
-							{#if hasLiked}
-								<button
-									class="btn btn-primary btn-sm"
-									on:click={() => postsStore.likePostForDetails(post.id)}>Dislike</button
-								>
-							{:else}
-								<button
-									class="btn btn-primary btn-sm"
-									on:click={() => postsStore.likePostForDetails(post.id)}>Like</button
-								>
-							{/if}
-						{/await}
+						{#if hasLiked && !isError && !isLoading}
+							<button
+								class="btn btn-primary btn-sm"
+								on:click={() => store.dispatch(postLike.initiate(post.id))}>Dislike</button
+							>
+						{:else}
+							<button
+								class="btn btn-primary btn-sm"
+								on:click={() => store.dispatch(postLike.initiate(post.id))}>Like</button
+							>
+						{/if}
 					{/if}
 
 					{#if $accountsStore.user?.id === post.userId}
 						<button
 							class="btn btn-secondary btn-sm mb-3"
-							on:click={() => postsStore.deletePost(post.id)}>Delete</button
+							on:click={() => store.dispatch(postDelete.initiate(post.id))}>Delete</button
 						>
 					{/if}
 				</div>

@@ -34,7 +34,7 @@ export const postsApi = baseApi.injectEndpoints({
 		}),
 		postLike: builder.mutation<unknown, string>({
 			query: (postId) => ({
-				url: `/posts/${postId}/hasLiked`,
+				url: `/posts/${postId}/likes`,
 				method: 'POST'
 			}),
 			invalidatesTags: ['PostDetails', 'PostLikeList', 'PostList']
@@ -63,9 +63,6 @@ export const postsApi = baseApi.injectEndpoints({
 				return {
 					url: `/posts/upload`,
 					method: 'POST',
-					headers: {
-						'Content-type': 'multipart/form-data'
-					},
 					body: formData
 				};
 			},
