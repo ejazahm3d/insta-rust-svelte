@@ -1,5 +1,5 @@
+import type { Post } from '$lib/types';
 import { requests } from './agent';
-import type { Post } from './post';
 
 export interface Profile {
 	id: string;

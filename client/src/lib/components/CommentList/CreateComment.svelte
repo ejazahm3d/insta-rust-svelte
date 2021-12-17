@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { commentsStore } from '$lib/stores';
+	import { store } from '$lib/store';
+
+	import { commentCreate } from '$lib/store/services/comments';
 
 	export let postId: string;
 
@@ -12,11 +14,11 @@
 	async function onSubmit() {
 		loading = true;
 		try {
-			await commentsStore.createComment(postId, comment);
+			await store.dispatch(commentCreate.initiate({ postId, body: comment }));
 			loading = false;
 			comment.contents = '';
 		} catch (error) {
-			console.error(error.response.data);
+			console.error(error);
 			loading = false;
 		}
 	}

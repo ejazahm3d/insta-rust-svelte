@@ -1,5 +1,4 @@
-import type { CreatePost } from '$lib/api/post';
-import type { Like, Post } from '$lib/types';
+import type { Like, Post, CreatePost } from '$lib/types';
 import { baseApi } from './baseApi';
 
 export const postsApi = baseApi.injectEndpoints({

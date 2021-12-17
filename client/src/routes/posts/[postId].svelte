@@ -1,9 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import agent from '$lib/api';
 	import CommentsList from '$lib/components/CommentList/CommentsList.svelte';
-	import CreateComment from '$lib/components/CreateComment/CreateComment.svelte';
-	import LikesList from '$lib/components/LikesList/LikesList.svelte';
 	import { store } from '$lib/store';
 	import { hasLikedPost, postDelete, postDetails, postLike } from '$lib/store/services/posts';
 	import { accountsStore } from '$lib/stores';

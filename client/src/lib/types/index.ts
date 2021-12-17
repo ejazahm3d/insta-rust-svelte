@@ -24,3 +24,18 @@ export interface CreatePost {
 	url: string;
 	caption: string;
 }
+
+export interface Comment {
+	id: string;
+	createdAt: string;
+	updatedAt: string;
+	contents: string;
+	userId: string;
+	username: string;
+	postId: string;
+	likes: number;
+}
+
+export interface CreateComment {
+	contents: string;
+}
