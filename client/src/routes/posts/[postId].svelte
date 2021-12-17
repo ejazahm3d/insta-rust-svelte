@@ -21,7 +21,7 @@
 <div class="flex flex-col items-center">
 	{#if post}
 		<div
-			class="mb-5 rounded overflow-hidden border w-full lg:w-6/12 md:w-6/12 bg-white mx-3 md:mx-0 lg:mx-0"
+			class="mb-5 rounded overflow-hidden border w-full lg:w-6/12 md:w-6/12 mx-3 md:mx-0 lg:mx-0"
 		>
 			<div class="w-full flex justify-between p-3">
 				<div class="flex">

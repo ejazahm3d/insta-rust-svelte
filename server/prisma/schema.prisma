@@ -7,17 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model sqlx_migrations {
-  version        BigInt   @id
-  description    String
-  installed_on   DateTime @default(now()) @db.Timestamptz(6)
-  success        Boolean
-  checksum       Bytes
-  execution_time BigInt
-
-  @@map("_sqlx_migrations")
-}
-
 model comments {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)

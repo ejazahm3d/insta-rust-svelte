@@ -3,9 +3,20 @@
 	import agent from '$lib/api/index';
 
 	import { postsStore, accountsStore } from '$lib/stores';
+	import { postsApi } from '$lib/store/services/posts';
+	import { onMount } from 'svelte';
+	import { store } from '$lib/store';
 
-	$: posts = $postsStore.posts;
+	const {
+		endpoints: { postList }
+	} = postsApi;
+
+	$: ({ data: posts, isLoading, isError, error } = postList.select()($store));
 	$: isLoggedIn = $accountsStore.user;
+
+	onMount(() => {
+		store.dispatch(postList.initiate());
+	});
 </script>
 
 <div>
@@ -17,13 +28,13 @@
 		</div>
 	{/if}
 
-	{#await postsStore.fetchPosts()}
+	{#if isLoading}
 		<p>Fetching posts</p>
-	{:then _}
+	{:else if posts}
 		<div class="flex flex-col items-center">
 			{#each posts as post}
 				<div
-					class="mb-5 rounded overflow-hidden border w-full lg:w-6/12 md:w-6/12 bg-white mx-3 md:mx-0 lg:mx-0"
+					class="mb-5 rounded overflow-hidden border w-full lg:w-6/12 md:w-6/12 mx-3 md:mx-0 lg:mx-0"
 				>
 					<div class="w-full flex justify-between p-3">
 						<div class="flex">
@@ -95,7 +106,7 @@
 				</div>
 			{/each}
 		</div>
-	{:catch error}
-		<div>{error.response.data}</div>
-	{/await}
+	{:else if isError}
+		<div>{JSON.stringify(error)}</div>
+	{/if}
 </div>
