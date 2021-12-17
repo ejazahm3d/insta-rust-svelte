@@ -10,7 +10,7 @@
 		leadersCount
 	} from '$lib/store/services/profiles';
 
-	import { accountsStore } from '$lib/stores/index';
+	import { accountsStore } from '$lib/auth/index';
 
 	import { onMount } from 'svelte';
 
@@ -36,7 +36,7 @@
 </script>
 
 {#if profile}
-	<div class="bg-gray-100 bg-opacity-25">
+	<div class=" bg-opacity-25">
 		{#if posts}
 			<div class="lg:w-8/12 lg:mx-auto mb-8">
 				<header class="flex flex-wrap items-center p-4 md:py-8">
@@ -133,11 +133,11 @@
 					<!-- insta freatures -->
 					<ul
 						class="flex items-center justify-around md:justify-center space-x-12  
-		uppercase tracking-widest font-semibold text-xs text-gray-600
+		uppercase tracking-widest font-semibold text-xs
 		border-t"
 					>
 						<!-- posts tab is active -->
-						<li class="md:border-t md:border-gray-700 md:-mt-px md:text-gray-700">
+						<li class="md:border-t  md:-mt-px ">
 							<a class="inline-block p-3" href="#post">
 								<i class="fas fa-th-large text-xl md:text-xs" />
 								<span class="hidden md:inline">post</span>

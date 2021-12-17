@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { accountsStore } from '$lib/stores';
+	import { accountsStore } from '$lib/auth';
 	import { onMount } from 'svelte';
 	import CreateComment from './CreateComment.svelte';
 	import { store } from '$lib/store';

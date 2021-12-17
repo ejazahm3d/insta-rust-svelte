@@ -2,7 +2,7 @@
 	import agent from '$lib/api';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
-	import { accountsStore } from '$lib/stores/index';
+	import { accountsStore } from '$lib/auth/index';
 
 	const user = writable({
 		email: '',

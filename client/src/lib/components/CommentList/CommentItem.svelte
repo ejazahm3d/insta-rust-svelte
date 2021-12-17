@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Comment } from '$lib/types';
 	import { formatDistance } from 'date-fns';
-	import { accountsStore } from '$lib/stores';
+	import { accountsStore } from '$lib/auth';
 	import { onMount } from 'svelte';
 	import { store } from '$lib/store';
 	import { commentDelete, commentLike, hasLikedComment } from '$lib/store/services/comments';

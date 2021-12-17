@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CreatePost from '$lib/components/CreatePost/CreatePost.svelte';
-	import { accountsStore } from '$lib/stores';
+	import { accountsStore } from '$lib/auth';
 	import { postList } from '$lib/store/services/posts';
 	import { onMount } from 'svelte';
 	import { store } from '$lib/store';

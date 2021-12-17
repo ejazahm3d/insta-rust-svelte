@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { accountsStore } from '$lib/stores';
+	import { accountsStore } from '$lib/auth';
 
 	export let isLoggedIn: boolean;
 	export let userId: string;

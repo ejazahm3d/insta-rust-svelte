@@ -3,7 +3,7 @@
 	import CommentsList from '$lib/components/CommentList/CommentsList.svelte';
 	import { store } from '$lib/store';
 	import { hasLikedPost, postDelete, postDetails, postLike } from '$lib/store/services/posts';
-	import { accountsStore } from '$lib/stores';
+	import { accountsStore } from '$lib/auth';
 	import { onMount } from 'svelte';
 
 	$: postId = $page.params.postId;

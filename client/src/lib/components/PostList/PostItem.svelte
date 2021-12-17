@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { store } from '$lib/store';
 	import { hasLikedPost, postDelete, postLike } from '$lib/store/services/posts';
-	import { accountsStore } from '$lib/stores';
+	import { accountsStore } from '$lib/auth';
 
 	import type { Post } from '$lib/types';
 	import { onMount } from 'svelte';

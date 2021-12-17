@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import { accountsStore } from '$lib/stores';
+	import { accountsStore } from '$lib/auth';
 	import { writable } from 'svelte/store';
 
 	const user = writable({
