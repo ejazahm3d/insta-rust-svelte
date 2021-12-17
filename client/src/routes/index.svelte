@@ -3,13 +3,9 @@
 	import agent from '$lib/api/index';
 
 	import { postsStore, accountsStore } from '$lib/stores';
-	import { postsApi } from '$lib/store/services/posts';
+	import { postList, postsApi } from '$lib/store/services/posts';
 	import { onMount } from 'svelte';
 	import { store } from '$lib/store';
-
-	const {
-		endpoints: { postList }
-	} = postsApi;
 
 	$: ({ data: posts, isLoading, isError, error } = postList.select()($store));
 	$: isLoggedIn = $accountsStore.user;
