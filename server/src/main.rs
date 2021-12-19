@@ -5,6 +5,10 @@ use sqlx::PgPool;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    if !std::path::Path::new("./tmp/").exists() {
+        std::fs::create_dir("./tmp/")?;
+    }
+
     let configuration = get_configuration().expect("Failed to read configuration.");
     let address = format!("127.0.0.1:{}", configuration.application_port);
     let connection_pool = PgPool::connect(&configuration.database.connection_string())

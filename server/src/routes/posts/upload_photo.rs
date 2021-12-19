@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::{fs, io::Write};
 
 use actix_multipart::Multipart;
 use actix_web::{web, HttpResponse};
@@ -40,6 +40,7 @@ async fn save_file(mut payload: Multipart) -> Result<Option<String>, anyhow::Err
         match fieldname {
             "file" => {
                 let filename = content_type.get_filename().unwrap();
+
                 let filepath = format!("./tmp/{}", sanitize_filename::sanitize(&filename))
                     .to_lowercase()
                     .split(" ")
