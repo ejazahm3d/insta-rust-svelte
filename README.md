@@ -25,7 +25,7 @@ It uses following technologies.
 
 1. SvelteKit
 2. Tailwind for UI
-3. Redux Toolkit Query for querying, caching and revalidating.
+3. Redux Toolkit Query for querying, caching and revalidation.
 
 ### Devops
 
