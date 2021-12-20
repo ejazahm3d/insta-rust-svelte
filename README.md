@@ -46,7 +46,7 @@ It uses following technologies.
 3. cd into `server` and run `cp .env.example .env`
 4. Run `docker-compose up -d` in `server` folder.
 5. Run `npx prisma migrate deploy` in `server` directory.
-6. Run `npm run dev` in `client` directory and then run `cargo run` in `server` directory.
+6. Run `npm run dev` in `client` directory and then run `cargo run --release` in `server` directory.
 7. Frontend should be running on `localhost:3000` and backend should be on `localhost:5000`
 
 ## Feedback
