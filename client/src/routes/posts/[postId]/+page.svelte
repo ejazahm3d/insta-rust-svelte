@@ -61,12 +61,12 @@
 						{#if hasLiked && !isError && !isLoading}
 							<button
 								class="btn btn-primary btn-sm"
-								on:click={() => store.dispatch(postLike.initiate(post.id))}>Dislike</button
+								on:click={() => post && store.dispatch(postLike.initiate(post.id))}>Dislike</button
 							>
 						{:else}
 							<button
 								class="btn btn-primary btn-sm"
-								on:click={() => store.dispatch(postLike.initiate(post.id))}>Like</button
+								on:click={() => post && store.dispatch(postLike.initiate(post.id))}>Like</button
 							>
 						{/if}
 					{/if}
@@ -74,7 +74,7 @@
 					{#if $accountsStore.user?.id === post.userId}
 						<button
 							class="btn btn-secondary btn-sm mb-3"
-							on:click={() => store.dispatch(postDelete.initiate(post.id))}>Delete</button
+							on:click={() => post && store.dispatch(postDelete.initiate(post.id))}>Delete</button
 						>
 					{/if}
 				</div>

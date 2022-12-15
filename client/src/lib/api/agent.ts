@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from 'axios';
-
+import axios from 'axios';
+import type { AxiosResponse } from 'axios';
 axios.defaults.baseURL = 'http://localhost:5000/api';
 axios.defaults.withCredentials = true;
 

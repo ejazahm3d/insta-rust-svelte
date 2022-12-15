@@ -18,7 +18,7 @@
 			await accountsStore.signup($user);
 			loading = false;
 			await goto('/');
-		} catch (error) {
+		} catch (error: any) {
 			loading = false;
 			console.log(error.response.data);
 		}

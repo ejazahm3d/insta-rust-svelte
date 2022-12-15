@@ -20,7 +20,7 @@
 			await goto('/');
 		} catch (error) {
 			loading = false;
-			console.log(error.response.data);
+			console.log((error as any).response.data);
 		}
 	}
 </script>

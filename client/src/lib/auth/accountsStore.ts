@@ -6,7 +6,7 @@ function createAccountStore() {
 	const { subscribe, set } = writable<{
 		user: {
 			id: string;
-		};
+		} | null;
 	}>({
 		user: null
 	});

@@ -70,10 +70,10 @@
 							</span>
 
 							<!-- follow button -->
-							{#if currentUser.id !== userId && !isFollowing}
+							{#if currentUser?.id !== userId && !isFollowing}
 								<button on:click={followUnfollow} class="btn btn-primary btn-sm">Follow</button>
 							{/if}
-							{#if currentUser.id !== userId && isFollowing}
+							{#if currentUser?.id !== userId && isFollowing}
 								<button on:click={followUnfollow} class="btn btn-primary btn-sm">unfollow</button>
 							{/if}
 						</div>
