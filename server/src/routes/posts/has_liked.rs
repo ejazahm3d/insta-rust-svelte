@@ -1,4 +1,4 @@
-use crate::{extractors::AuthorizationService, io::error::Error, repos::PostsRepository};
+use crate::{extractors::AuthorizationService, io::error::AppError, repos::PostsRepository};
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -7,7 +7,7 @@ pub async fn has_liked(
     auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let post_repository = PostsRepository {
         connection: conn.get_ref(),
     };

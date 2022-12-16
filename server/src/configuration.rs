@@ -22,14 +22,17 @@ impl DatabaseSettings {
     }
 
     pub fn connection_string_without_db(&self) -> String {
-        format!("postgres://{}:{}@{}:{}", self.username, self.password, self.host, self.port)
+        format!(
+            "postgres://{}:{}@{}:{}",
+            self.username, self.password, self.host, self.port
+        )
     }
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
-    let mut settings = config::Config::default();
+    let settings = config::Config::builder()
+        .add_source(config::File::with_name("configuration"))
+        .build()?;
 
-    settings.merge(config::File::with_name("configuration"))?;
-
-    settings.try_into()
+    settings.try_deserialize::<Settings>()
 }

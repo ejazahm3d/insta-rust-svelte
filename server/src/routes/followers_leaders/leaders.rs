@@ -1,6 +1,6 @@
 use actix_web::{web, HttpResponse};
 
-use crate::io::error::Error;
+use crate::io::error::AppError;
 use crate::repos::FollowersRepository;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -8,7 +8,7 @@ use uuid::Uuid;
 pub async fn leaders(
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let followers_repository = FollowersRepository { connection: &conn };
     let follower_id = &path;
     let people_following_you = followers_repository

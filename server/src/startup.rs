@@ -1,6 +1,6 @@
 use actix_cors::Cors;
-use actix_session::CookieSession;
-use actix_web::{dev::Server, web, App, HttpServer};
+use actix_session::{storage::CookieSessionStore, SessionMiddleware};
+use actix_web::{cookie::Key, dev::Server, web, App, HttpServer};
 use sqlx::PgPool;
 use std::net::TcpListener;
 
@@ -18,7 +18,12 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
                     .allow_any_origin()
                     .supports_credentials(),
             )
-            .wrap(CookieSession::signed(&[0; 32]).secure(false))
+            .wrap(
+                SessionMiddleware::builder(CookieSessionStore::default(), Key::from(&[0; 64]))
+                    .cookie_secure(false)
+                    // customize session and cookie expiration
+                    .build(),
+            )
             .configure(configure_routes)
             .app_data(db_pool.clone())
     })

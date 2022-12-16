@@ -1,4 +1,4 @@
-use crate::{io::error::Error, repos::PostsRepository};
+use crate::{io::error::AppError, repos::PostsRepository};
 use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
@@ -20,7 +20,7 @@ pub struct ListPostsResponse {
     pub comments: Option<i64>,
 }
 
-pub async fn list_all_posts(conn: web::Data<PgPool>) -> Result<HttpResponse, Error> {
+pub async fn list_all_posts(conn: web::Data<PgPool>) -> Result<HttpResponse, AppError> {
     let post_repository = PostsRepository { connection: &conn };
     let posts = post_repository.find_many().await?;
 

@@ -1,5 +1,5 @@
 use crate::{
-    io::error::Error,
+    io::error::AppError,
     repos::UsersRepository,
     services::{Claims, Password, Token},
 };
@@ -26,7 +26,7 @@ pub async fn login(
     body: web::Json<LoginRequest>,
     conn: web::Data<PgPool>,
     session: Session,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let user_repository = UsersRepository { connection: &conn };
 
     let user = user_repository.find_user_with_email(&body.email).await?;

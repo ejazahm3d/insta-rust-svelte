@@ -1,4 +1,4 @@
-use crate::{extractors::AuthorizationService, io::error::Error, repos::PostsRepository};
+use crate::{extractors::AuthorizationService, io::error::AppError, repos::PostsRepository};
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -7,7 +7,7 @@ pub async fn delete_post(
     auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> anyhow::Result<HttpResponse, Error> {
+) -> anyhow::Result<HttpResponse, AppError> {
     let post_repository = PostsRepository {
         connection: conn.get_ref(),
     };
@@ -33,11 +33,11 @@ pub async fn delete_post(
                 .await
                 .map_err(|e| {
                     eprintln!("{}", e);
-                    Error::InternalServerError
+                    AppError::InternalServerError
                 })?
                 .map_err(|e| {
                     eprintln!("{}", e);
-                    Error::InternalServerError
+                    AppError::InternalServerError
                 })?;
 
             // delete post

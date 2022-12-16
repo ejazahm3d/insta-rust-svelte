@@ -1,4 +1,4 @@
-use crate::{io::error::Error, repos::PostsRepository};
+use crate::{io::error::AppError, repos::PostsRepository};
 use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
@@ -23,7 +23,7 @@ pub struct PostDetailsResponse {
 pub async fn post_details(
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let post_repository = PostsRepository { connection: &conn };
     let post = post_repository.find_one(&path).await?;
 

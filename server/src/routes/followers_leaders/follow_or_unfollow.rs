@@ -1,7 +1,7 @@
 use actix_web::{web, HttpResponse};
 
 use crate::repos::FollowersRepository;
-use crate::{extractors::AuthorizationService, io::error::Error};
+use crate::{extractors::AuthorizationService, io::error::AppError};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -9,7 +9,7 @@ pub async fn follow_or_unfollow(
     auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let followers_repository = FollowersRepository { connection: &conn };
     let follower_id = &auth_service.id;
     let leader_id = &path.to_owned();
