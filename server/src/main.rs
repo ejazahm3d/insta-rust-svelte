@@ -3,7 +3,7 @@ use std::net::TcpListener;
 use insta::{configuration::get_configuration, startup::run};
 use sqlx::PgPool;
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
     if !std::path::Path::new("./tmp/").exists() {
         std::fs::create_dir("./tmp/")?;
