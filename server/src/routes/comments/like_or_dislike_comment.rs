@@ -1,4 +1,4 @@
-use crate::{extractors::AuthorizationService, io::error::Error, repos::CommentsRepository};
+use crate::{extractors::AuthorizationService, io::error::AppError, repos::CommentsRepository};
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -7,7 +7,7 @@ pub async fn like_or_dislike_comment(
     auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<(Uuid, Uuid)>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let comments_repository = CommentsRepository {
         connection: conn.get_ref(),
     };

@@ -1,4 +1,4 @@
-use crate::{extractors::AuthorizationService, io::error::Error, repos::ProfilesRepository};
+use crate::{extractors::AuthorizationService, io::error::AppError, repos::ProfilesRepository};
 use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
@@ -19,7 +19,7 @@ pub async fn profile_details(
     _auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let profiles_repository = ProfilesRepository { connection: &conn };
     let user_id = &path;
 

@@ -6,7 +6,7 @@ use chrono::{Duration, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::io::error::Error;
+use crate::io::error::AppError;
 use crate::services::{Claims, Password, Token};
 
 use crate::repos::UsersRepository;
@@ -30,7 +30,7 @@ pub async fn sign_up(
     body: web::Json<SignUpRequest>,
     conn: web::Data<PgPool>,
     session: Session,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let user_repository = UsersRepository {
         connection: conn.as_ref(),
     };

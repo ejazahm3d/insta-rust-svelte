@@ -1,4 +1,4 @@
-use crate::{io::error::Error, repos::PostsRepository};
+use crate::{io::error::AppError, repos::PostsRepository};
 use actix_web::{web, HttpResponse};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
@@ -17,7 +17,7 @@ pub struct LikesByPostResponse {
 pub async fn likes_by_post(
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let post_repository = PostsRepository { connection: &conn };
     let post_id = &path;
     let likes = post_repository.find_many_likes(post_id).await?;

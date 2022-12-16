@@ -6,7 +6,7 @@ use futures::{StreamExt, TryStreamExt};
 use itertools::Itertools;
 use sqlx::PgPool;
 
-use crate::{extractors::AuthorizationService, io::error::Error};
+use crate::{extractors::AuthorizationService, io::error::AppError};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct UploadPostPhotoResponse {
@@ -17,10 +17,10 @@ pub async fn upload_post_photo(
     _auth_service: AuthorizationService,
     _conn: web::Data<PgPool>,
     payload: Multipart,
-) -> anyhow::Result<HttpResponse, Error> {
+) -> anyhow::Result<HttpResponse, AppError> {
     let filepath = save_file(payload).await.map_err(|e| {
         eprintln!("{:?}", e);
-        Error::InternalServerError
+        AppError::InternalServerError
     })?;
 
     match filepath {
@@ -34,7 +34,7 @@ async fn save_file(mut payload: Multipart) -> Result<Option<String>, anyhow::Err
 
     // iterate over multipart stream
     while let Ok(Some(mut field)) = payload.try_next().await {
-        let content_type = field.content_disposition().unwrap();
+        let content_type = field.content_disposition();
         let fieldname = content_type.get_name().unwrap();
 
         match fieldname {

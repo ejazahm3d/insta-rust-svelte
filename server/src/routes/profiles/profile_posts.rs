@@ -1,4 +1,4 @@
-use crate::{extractors::AuthorizationService, io::error::Error, repos::PostsRepository};
+use crate::{extractors::AuthorizationService, io::error::AppError, repos::PostsRepository};
 use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -7,7 +7,7 @@ pub async fn profile_posts(
     _auth_service: AuthorizationService,
     conn: web::Data<PgPool>,
     path: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
+) -> Result<HttpResponse, AppError> {
     let posts_repository = PostsRepository { connection: &conn };
     let user_id = &path;
 
