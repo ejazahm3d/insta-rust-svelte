@@ -1,16 +1,17 @@
-use crate::{extractors::AuthorizationService, io::error::AppError, repos::CommentsRepository};
-use actix_web::{web, HttpResponse};
+use crate::{extractors::AuthUser, io::error::AppError, repos::CommentsRepository};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+};
 use sqlx::PgPool;
 use uuid::Uuid;
 
 pub async fn like_or_dislike_comment(
-    auth_service: AuthorizationService,
-    conn: web::Data<PgPool>,
-    path: web::Path<(Uuid, Uuid)>,
-) -> Result<HttpResponse, AppError> {
-    let comments_repository = CommentsRepository {
-        connection: conn.get_ref(),
-    };
+    auth_service: AuthUser,
+    State(conn): State<PgPool>,
+    Path(path): Path<(Uuid, Uuid)>,
+) -> Result<impl IntoResponse, AppError> {
+    let comments_repository = CommentsRepository { connection: &conn };
 
     let comment_id = &path.1;
 
@@ -19,7 +20,7 @@ pub async fn like_or_dislike_comment(
     let comment = comments_repository.find_one(comment_id).await?;
 
     if comment.is_none() {
-        return Ok(HttpResponse::NotFound().body("Not found"));
+        return Err(AppError::NotFound);
     }
 
     let comment_like = comments_repository
@@ -30,14 +31,14 @@ pub async fn like_or_dislike_comment(
         Some(_) => {
             comments_repository.delete_like(comment_id).await?;
 
-            Ok(HttpResponse::Ok().finish())
+            Ok(())
         }
         None => {
             comments_repository
                 .insert_like(comment_id, &user_id)
                 .await?;
 
-            Ok(HttpResponse::Ok().finish())
+            Ok(())
         }
     }
 }

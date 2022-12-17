@@ -1,5 +1,9 @@
-use crate::{extractors::AuthorizationService, io::error::AppError, repos::ProfilesRepository};
-use actix_web::{web, HttpResponse};
+use crate::{extractors::AuthUser, io::error::AppError, repos::ProfilesRepository};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -16,14 +20,14 @@ pub struct UserProfileResponse {
 }
 
 pub async fn profile_details(
-    _auth_service: AuthorizationService,
-    conn: web::Data<PgPool>,
-    path: web::Path<Uuid>,
-) -> Result<HttpResponse, AppError> {
+    _auth_service: AuthUser,
+    State(conn): State<PgPool>,
+    Path(path): Path<Uuid>,
+) -> Result<impl IntoResponse, AppError> {
     let profiles_repository = ProfilesRepository { connection: &conn };
     let user_id = &path;
 
     let profile = profiles_repository.fine_one(user_id).await?;
 
-    Ok(HttpResponse::Ok().json(profile))
+    Ok(Json(profile))
 }

@@ -1,16 +1,18 @@
-use crate::{extractors::AuthorizationService, io::error::AppError, repos::CommentsRepository};
-use actix_web::{web, HttpResponse};
+use crate::{extractors::AuthUser, io::error::AppError, repos::CommentsRepository};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use sqlx::PgPool;
 use uuid::Uuid;
 
 pub async fn delete_comment(
-    auth_service: AuthorizationService,
-    conn: web::Data<PgPool>,
-    path: web::Path<(Uuid, Uuid)>,
-) -> anyhow::Result<HttpResponse, AppError> {
-    let comments_repository = CommentsRepository {
-        connection: conn.get_ref(),
-    };
+    auth_service: AuthUser,
+    State(conn): State<PgPool>,
+    Path(path): Path<(Uuid, Uuid)>,
+) -> anyhow::Result<impl IntoResponse, AppError> {
+    let comments_repository = CommentsRepository { connection: &conn };
 
     let comment_id = path.1;
     let user_id = auth_service.id;
@@ -18,7 +20,7 @@ pub async fn delete_comment(
     let comment = comments_repository.find_one(&comment_id).await?;
 
     if comment.is_none() {
-        return Ok(HttpResponse::NotFound().body("Comment Not found"));
+        return Err(AppError::NotFound);
     }
 
     let comment = comment.unwrap();
@@ -29,8 +31,8 @@ pub async fn delete_comment(
         true => {
             let comment = comments_repository.delete_one(&comment_id).await?;
 
-            Ok(HttpResponse::Ok().json(comment))
+            Ok(Json(comment))
         }
-        false => Ok(HttpResponse::Unauthorized().body("Not owner")),
+        false => Err(AppError::Unauthorized),
     }
 }

@@ -4,9 +4,9 @@ use insta::{configuration::get_configuration, startup::run};
 use sqlx::PgPool;
 
 #[tokio::main]
-async fn main() -> std::io::Result<()> {
+async fn main() -> hyper::Result<()> {
     if !std::path::Path::new("./tmp/").exists() {
-        std::fs::create_dir("./tmp/")?;
+        std::fs::create_dir("./tmp/").expect("Could not create dir!");
     }
 
     let configuration = get_configuration().expect("Failed to read configuration.");

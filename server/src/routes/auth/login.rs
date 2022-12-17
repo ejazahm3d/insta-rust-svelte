@@ -3,8 +3,9 @@ use crate::{
     repos::UsersRepository,
     services::{Claims, Password, Token},
 };
-use actix_session::Session;
-use actix_web::{web, HttpResponse};
+
+use axum::{extract::State, response::IntoResponse, Json};
+use axum_sessions::extractors::WritableSession;
 use chrono::{Duration, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -23,16 +24,16 @@ pub struct LoginResponse {
 }
 
 pub async fn login(
-    body: web::Json<LoginRequest>,
-    conn: web::Data<PgPool>,
-    session: Session,
-) -> Result<HttpResponse, AppError> {
+    State(conn): State<PgPool>,
+    mut session: WritableSession,
+    Json(body): Json<LoginRequest>,
+) -> Result<impl IntoResponse, AppError> {
     let user_repository = UsersRepository { connection: &conn };
 
     let user = user_repository.find_user_with_email(&body.email).await?;
 
     if user.is_none() {
-        return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
+        return Err(AppError::BadRequest("Invalid email or password".into()));
     }
 
     let user = user.unwrap();
@@ -41,7 +42,7 @@ pub async fn login(
         Password::verify_password(body.password.as_str(), user.password.as_str())?;
 
     if !is_password_match {
-        return Ok(HttpResponse::BadRequest().body("Invalid email or password"));
+        return Err(AppError::BadRequest("Invalid email or password".into()));
     }
 
     let _date = Utc::now() + Duration::days(7);
@@ -54,9 +55,12 @@ pub async fn login(
     // Save jwt in cookie session
     session.insert("jwt", token)?;
 
-    Ok(HttpResponse::Ok().json(LoginResponse {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-    }))
+    Ok((
+        axum::http::StatusCode::OK,
+        Json(LoginResponse {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+        }),
+    ))
 }

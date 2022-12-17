@@ -1,7 +1,9 @@
 use std::usize;
 
-use actix_session::Session;
-use actix_web::{web, HttpResponse};
+use axum::extract::State;
+use axum::response::IntoResponse;
+use axum::Json;
+use axum_sessions::extractors::WritableSession;
 use chrono::{Duration, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -27,18 +29,18 @@ pub struct SignUpResponse {
 }
 
 pub async fn sign_up(
-    body: web::Json<SignUpRequest>,
-    conn: web::Data<PgPool>,
-    session: Session,
-) -> Result<HttpResponse, AppError> {
-    let user_repository = UsersRepository {
-        connection: conn.as_ref(),
-    };
+    State(conn): State<PgPool>,
+    mut session: WritableSession,
+    Json(body): Json<SignUpRequest>,
+) -> Result<impl IntoResponse, AppError> {
+    let user_repository = UsersRepository { connection: &conn };
 
     let user_with_email = user_repository.find_user_with_email(&body.email).await?;
 
     if user_with_email.is_some() {
-        return Ok(HttpResponse::BadRequest().body("User with email already exists"));
+        return Err(AppError::BadRequest(
+            "User with email already exists".into(),
+        ));
     }
 
     let user_with_username = user_repository
@@ -46,7 +48,9 @@ pub async fn sign_up(
         .await?;
 
     if user_with_username.is_some() {
-        return Ok(HttpResponse::BadRequest().body("User with username already exists"));
+        return Err(AppError::BadRequest(
+            "User with username already exists".into(),
+        ));
     }
 
     let hashed_password = Password::hash_password(&body.password)?;
@@ -73,9 +77,12 @@ pub async fn sign_up(
     // Save jwt in cookie session
     session.insert("jwt", token)?;
 
-    Ok(HttpResponse::Created().json(SignUpResponse {
-        id: res.id,
-        email: res.email,
-        username: res.username,
-    }))
+    Ok((
+        axum::http::StatusCode::CREATED,
+        Json(SignUpResponse {
+            id: res.id,
+            email: res.email,
+            username: res.username,
+        }),
+    ))
 }

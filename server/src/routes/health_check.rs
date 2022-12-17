@@ -1,5 +1,5 @@
-use actix_web::{HttpResponse, Responder};
+use axum::response::IntoResponse;
 
-pub async fn health_check() -> impl Responder {
-    HttpResponse::Ok()
+pub async fn health_check() -> impl IntoResponse {
+    axum::http::StatusCode::OK
 }

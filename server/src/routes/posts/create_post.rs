@@ -1,5 +1,5 @@
-use crate::{extractors::AuthorizationService, io::error::AppError, repos::PostsRepository};
-use actix_web::{web, HttpResponse};
+use crate::{extractors::AuthUser, io::error::AppError, repos::PostsRepository};
+use axum::{extract::State, response::IntoResponse, Json};
 use sqlx::PgPool;
 
 #[derive(serde::Deserialize, Debug)]
@@ -11,15 +11,13 @@ pub struct CreatePostRequest {
 }
 
 pub async fn create_post(
-    body: web::Json<CreatePostRequest>,
-    auth_service: AuthorizationService,
-    conn: web::Data<PgPool>,
-) -> anyhow::Result<HttpResponse, AppError> {
-    let post_repository = PostsRepository {
-        connection: conn.get_ref(),
-    };
+    State(conn): State<PgPool>,
+    _auth_user: AuthUser,
+    Json(body): Json<CreatePostRequest>,
+) -> anyhow::Result<impl IntoResponse, AppError> {
+    let post_repository = PostsRepository { connection: &conn };
 
-    let post = post_repository.insert_one(body.0, auth_service.id).await?;
+    let post = post_repository.insert_one(body, _auth_user.id).await?;
 
-    Ok(HttpResponse::Ok().json(post))
+    Ok((axum::http::StatusCode::CREATED, Json(post)))
 }

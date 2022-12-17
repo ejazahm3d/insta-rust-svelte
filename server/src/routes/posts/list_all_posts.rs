@@ -1,5 +1,5 @@
 use crate::{io::error::AppError, repos::PostsRepository};
-use actix_web::{web, HttpResponse};
+use axum::{extract::State, response::IntoResponse, Json};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -20,9 +20,9 @@ pub struct ListPostsResponse {
     pub comments: Option<i64>,
 }
 
-pub async fn list_all_posts(conn: web::Data<PgPool>) -> Result<HttpResponse, AppError> {
+pub async fn list_all_posts(State(conn): State<PgPool>) -> Result<impl IntoResponse, AppError> {
     let post_repository = PostsRepository { connection: &conn };
     let posts = post_repository.find_many().await?;
 
-    Ok(HttpResponse::Ok().json(posts))
+    Ok(Json(posts))
 }

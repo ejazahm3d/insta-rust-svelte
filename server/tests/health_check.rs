@@ -26,7 +26,7 @@ async fn spawn_app() -> TestApp {
     }
 }
 
-#[actix_rt::test]
+#[tokio::test]
 async fn health_check_works() {
     // Arrange
     let app = spawn_app().await;

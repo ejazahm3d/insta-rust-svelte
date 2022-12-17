@@ -1,15 +1,17 @@
-use actix_web::{web, HttpResponse};
+use axum::extract::{Path, State};
+use axum::response::IntoResponse;
+use axum::Json;
 
 use crate::repos::FollowersRepository;
-use crate::{extractors::AuthorizationService, io::error::AppError};
+use crate::{extractors::AuthUser, io::error::AppError};
 use sqlx::PgPool;
 use uuid::Uuid;
 
 pub async fn is_following(
-    auth_service: AuthorizationService,
-    conn: web::Data<PgPool>,
-    path: web::Path<Uuid>,
-) -> Result<HttpResponse, AppError> {
+    auth_service: AuthUser,
+    State(conn): State<PgPool>,
+    Path(path): Path<Uuid>,
+) -> Result<impl IntoResponse, AppError> {
     let followers_repository = FollowersRepository { connection: &conn };
     let follower_id = &auth_service.id;
     let leader_id = &path.to_owned();
@@ -18,7 +20,7 @@ pub async fn is_following(
         .await?;
 
     match follower {
-        Some(_) => Ok(HttpResponse::Ok().json(true)),
-        None => Ok(HttpResponse::Ok().json(false)),
+        Some(_) => Ok(Json(true)),
+        None => Ok(Json(false)),
     }
 }

@@ -1,10 +1,14 @@
 use crate::{io::error::AppError, repos::PostsRepository};
-use actix_web::{web, HttpResponse};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PostDetailsResponse {
     pub id: Uuid,
@@ -21,14 +25,15 @@ pub struct PostDetailsResponse {
 }
 
 pub async fn post_details(
-    conn: web::Data<PgPool>,
-    path: web::Path<Uuid>,
-) -> Result<HttpResponse, AppError> {
+    State(conn): State<PgPool>,
+    Path(path): Path<Uuid>,
+) -> Result<impl IntoResponse, AppError> {
     let post_repository = PostsRepository { connection: &conn };
     let post = post_repository.find_one(&path).await?;
 
+    dbg!(&post);
     match post {
-        Some(p) => Ok(HttpResponse::Ok().json(p)),
-        None => Ok(HttpResponse::NotFound().body("Post not found")),
+        Some(p) => Ok(Json(p)),
+        None => Err(AppError::NotFound),
     }
 }

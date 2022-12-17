@@ -1,16 +1,18 @@
-use crate::{extractors::AuthorizationService, io::error::AppError, repos::PostsRepository};
-use actix_web::{web, HttpResponse};
+use crate::{extractors::AuthUser, io::error::AppError, repos::PostsRepository};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use sqlx::PgPool;
 use uuid::Uuid;
 
 pub async fn delete_post(
-    auth_service: AuthorizationService,
-    conn: web::Data<PgPool>,
-    path: web::Path<Uuid>,
-) -> anyhow::Result<HttpResponse, AppError> {
-    let post_repository = PostsRepository {
-        connection: conn.get_ref(),
-    };
+    auth_service: AuthUser,
+    State(conn): State<PgPool>,
+    Path(path): Path<Uuid>,
+) -> anyhow::Result<impl IntoResponse, AppError> {
+    let post_repository = PostsRepository { connection: &conn };
 
     let post_id = &path;
     let user_id = auth_service.id;
@@ -18,7 +20,7 @@ pub async fn delete_post(
     let post = post_repository.find_one(post_id).await?;
 
     if post.is_none() {
-        return Ok(HttpResponse::NotFound().body("Not found"));
+        return Err(AppError::NotFound);
     }
 
     let post = post.unwrap();
@@ -29,7 +31,7 @@ pub async fn delete_post(
         true => {
             // delete image
             let filepath = format!(".{}", post.url);
-            web::block(|| std::fs::remove_file(filepath))
+            tokio::task::spawn_blocking(|| std::fs::remove_file(filepath))
                 .await
                 .map_err(|e| {
                     eprintln!("{}", e);
@@ -43,8 +45,8 @@ pub async fn delete_post(
             // delete post
             let post = post_repository.delete_one(post_id).await?;
 
-            Ok(HttpResponse::Ok().json(post))
+            Ok(Json(post))
         }
-        false => Ok(HttpResponse::Unauthorized().body("Not Authorized")),
+        false => Err(AppError::Unauthorized),
     }
 }

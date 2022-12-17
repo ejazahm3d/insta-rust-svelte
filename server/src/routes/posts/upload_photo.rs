@@ -1,12 +1,10 @@
 use std::io::Write;
 
-use actix_multipart::Multipart;
-use actix_web::{web, HttpResponse};
-use futures::{StreamExt, TryStreamExt};
+use axum::{extract::Multipart, response::IntoResponse, Json};
+use futures::StreamExt;
 use itertools::Itertools;
-use sqlx::PgPool;
 
-use crate::{extractors::AuthorizationService, io::error::AppError};
+use crate::{extractors::AuthUser, io::error::AppError};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct UploadPostPhotoResponse {
@@ -14,18 +12,17 @@ pub struct UploadPostPhotoResponse {
 }
 
 pub async fn upload_post_photo(
-    _auth_service: AuthorizationService,
-    _conn: web::Data<PgPool>,
+    _auth_service: AuthUser,
     payload: Multipart,
-) -> anyhow::Result<HttpResponse, AppError> {
+) -> anyhow::Result<impl IntoResponse, AppError> {
     let filepath = save_file(payload).await.map_err(|e| {
         eprintln!("{:?}", e);
         AppError::InternalServerError
     })?;
 
     match filepath {
-        Some(f) => Ok(HttpResponse::Ok().json(UploadPostPhotoResponse { filepath: Some(f) })),
-        None => Ok(HttpResponse::Ok().json(UploadPostPhotoResponse { filepath: None })),
+        Some(f) => Ok(Json(UploadPostPhotoResponse { filepath: Some(f) })),
+        None => Ok(Json(UploadPostPhotoResponse { filepath: None })),
     }
 }
 
@@ -33,15 +30,14 @@ async fn save_file(mut payload: Multipart) -> Result<Option<String>, anyhow::Err
     let mut filepath_response: Option<String> = None;
 
     // iterate over multipart stream
-    while let Ok(Some(mut field)) = payload.try_next().await {
-        let content_type = field.content_disposition();
-        let fieldname = content_type.get_name().unwrap();
+    while let Ok(Some(mut field)) = payload.next_field().await {
+        let name = field.name().unwrap().to_string();
 
-        match fieldname {
+        match name.as_str() {
             "file" => {
-                let filename = content_type.get_filename().unwrap();
+                let file_name = field.file_name().unwrap().to_string();
 
-                let filepath = format!("./tmp/{}", sanitize_filename::sanitize(&filename))
+                let filepath = format!("./tmp/{}", sanitize_filename::sanitize(&file_name))
                     .to_lowercase()
                     .split(" ")
                     .join("-");
@@ -49,12 +45,14 @@ async fn save_file(mut payload: Multipart) -> Result<Option<String>, anyhow::Err
                 filepath_response = Some(filepath.clone());
 
                 // File::create is blocking operation, use threadpool
-                let mut f = web::block(|| std::fs::File::create(filepath)).await??;
+                let mut f =
+                    tokio::task::spawn_blocking(|| std::fs::File::create(filepath)).await??;
                 // Field in turn is stream of *Bytes* object
                 while let Some(chunk) = field.next().await {
                     let data = chunk.unwrap();
                     // filesystem operations are blocking, we have to use threadpool
-                    f = web::block(move || f.write_all(&data).map(|_| f)).await??;
+                    f = tokio::task::spawn_blocking(move || f.write_all(&data).map(|_| f))
+                        .await??;
                 }
             }
             _ => println!("not received with 'file'"),

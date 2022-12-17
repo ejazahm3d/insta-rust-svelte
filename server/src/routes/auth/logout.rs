@@ -1,7 +1,7 @@
-use actix_session::Session;
-use actix_web::HttpResponse;
+use axum::response::IntoResponse;
+use axum_sessions::extractors::WritableSession;
 
-pub async fn logout(session: Session) -> HttpResponse {
-    session.clear();
-    HttpResponse::Ok().finish()
+pub async fn logout(mut session: WritableSession) -> impl IntoResponse {
+    session.destroy();
+    axum::http::StatusCode::OK
 }

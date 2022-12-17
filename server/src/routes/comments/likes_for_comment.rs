@@ -1,5 +1,9 @@
 use crate::{io::error::AppError, repos::CommentsRepository};
-use actix_web::{web, HttpResponse};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -15,12 +19,12 @@ pub struct LikesByCommentResponse {
 }
 
 pub async fn likes_by_comment(
-    conn: web::Data<PgPool>,
-    path: web::Path<(Uuid, Uuid)>,
-) -> Result<HttpResponse, AppError> {
+    State(conn): State<PgPool>,
+    Path(path): Path<(Uuid, Uuid)>,
+) -> Result<impl IntoResponse, AppError> {
     let comments_repository = CommentsRepository { connection: &conn };
     let comment_id = &path.1;
     let likes = comments_repository.find_many_likes(comment_id).await?;
 
-    Ok(HttpResponse::Ok().json(likes))
+    Ok(Json(likes))
 }

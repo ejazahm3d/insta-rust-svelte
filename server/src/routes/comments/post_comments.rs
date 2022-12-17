@@ -1,5 +1,9 @@
 use crate::{io::error::AppError, repos::CommentsRepository};
-use actix_web::{web, HttpResponse};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -18,11 +22,11 @@ pub struct CommentsByPostResponse {
 }
 
 pub async fn post_comments(
-    conn: web::Data<PgPool>,
-    post_id: web::Path<Uuid>,
-) -> Result<HttpResponse, AppError> {
+    State(conn): State<PgPool>,
+    Path(post_id): Path<Uuid>,
+) -> Result<impl IntoResponse, AppError> {
     let comments_repository = CommentsRepository { connection: &conn };
     let comments = comments_repository.find_many(&post_id).await?;
 
-    Ok(HttpResponse::Ok().json(comments))
+    Ok(Json(comments))
 }

@@ -1,5 +1,9 @@
-use crate::{extractors::AuthorizationService, io::error::AppError, repos::CommentsRepository};
-use actix_web::{web, HttpResponse};
+use crate::{extractors::AuthUser, io::error::AppError, repos::CommentsRepository};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -9,21 +13,19 @@ pub struct CreateCommentRequest {
 }
 
 pub async fn create_comment(
-    body: web::Json<CreateCommentRequest>,
-    auth_service: AuthorizationService,
-    conn: web::Data<PgPool>,
-    path: web::Path<Uuid>,
-) -> anyhow::Result<HttpResponse, AppError> {
-    let comments_repository = CommentsRepository {
-        connection: conn.get_ref(),
-    };
+    auth_service: AuthUser,
+    State(conn): State<PgPool>,
+    Path(path): Path<Uuid>,
+    Json(body): Json<CreateCommentRequest>,
+) -> anyhow::Result<impl IntoResponse, AppError> {
+    let comments_repository = CommentsRepository { connection: &conn };
 
     let user_id = auth_service.id;
     let post_id = path;
 
     let comment = comments_repository
-        .insert_one(&body.0, &user_id, &post_id)
+        .insert_one(&body, &user_id, &post_id)
         .await?;
 
-    Ok(HttpResponse::Ok().json(comment))
+    Ok(Json(comment))
 }

@@ -1,3 +1,6 @@
+### Health Check
+GET http://localhost:5000/health_check
+
 ### Sign Up
 POST http://localhost:5000/api/auth/signup 
 Content-Type: application/json
@@ -13,7 +16,7 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "test@test.com",
+    "email": "test3@test.com",
     "password": "12345678"
 }
 
@@ -45,10 +48,10 @@ Content-Type: application/json
 }
 
 ### Delete Post by Id
-DELETE http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a
+DELETE http://localhost:5000/api/posts/acc7bc2e-b872-4575-8cf0-032d7d08239f
 
 ### Get Post by Id
-GET http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a
+GET http://localhost:5000/api/posts/2bdeb9f1-00f0-41d2-8a55-4b9ab359f2a0
 
 ### Get Post likes by postID
 GET http://localhost:5000/api/posts/d0850a0d-1115-4d65-b807-871592ef1f1a/likes
